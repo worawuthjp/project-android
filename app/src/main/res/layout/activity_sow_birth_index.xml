@@ -39,8 +39,8 @@
             android:gravity="center">
 
             <EditText
-                android:id="@+id/alive"
-                android:layout_width="wrap_content"
+                android:id="@+id/sowUHFEditText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="จำนวนลูกสุกรที่รอด"
@@ -58,6 +58,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="สแกน" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/showHeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:text="แสดงรายละเอียด : "/>
+
+            <TextView
+                android:id="@+id/showInfoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/nextBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#30DC0A"
+        android:text="ต่อไป"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

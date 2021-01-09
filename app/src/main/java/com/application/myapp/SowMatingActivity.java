@@ -29,7 +29,7 @@ import sound.Sound;
 public class SowMatingActivity extends AppCompatActivity implements View.OnClickListener {
     private ScanUHF scanner;
     private Button nextBtn;
-    private Button scanBtn;
+    private Button scanBtn,backBtn;
     private EditText sowIDEditText;
     private TextView showHeaderText;
     private TextView showInfoText;
@@ -53,6 +53,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
 
         scanBtn = (Button) findViewById(R.id.scanBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
+        backBtn = (Button) findViewById(R.id.backtoSemenBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
@@ -80,6 +81,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         });
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(this);
     }
 
     public void ScanUHF(){
@@ -145,7 +147,12 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.scanBtn :
+                sound.playSound(1);
                 ScanUHF();
+                break;
+            case R.id.backtoSemenBtn :
+                Intent intent1 = new Intent(SowMatingActivity.this, SowMatingActivity3.class);
+                startActivity(intent1);
                 break;
         }
     }

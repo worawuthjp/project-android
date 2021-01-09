@@ -149,6 +149,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.scanBlockBtn :
+                sound.playSound(1);
                 ScanUHF();
                 break;
         }

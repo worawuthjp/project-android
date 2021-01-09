@@ -34,6 +34,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     private EditText barcodeEditText;
     private TextView showInfoText,showHeaderText;
     private String sowCode,sowID,sowSemenID;
+    private BarcodeScanner bs;
 
 
     @Override
@@ -41,8 +42,9 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sow_mating3);
 
+        bs = new BarcodeScanner();
         scanBarcodeBtn = (Button)findViewById(R.id.scanBarCodeBtn);
-        barcodeEditText = (EditText)findViewById(R.id.barcodeIDEditText);
+        barcodeEditText = this.findViewById(R.id.barcodeIDEditText);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
@@ -60,7 +62,6 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
 
         switch (v.getId()){
             case R.id.scanBarCodeBtn :
-                BarcodeScanner bs = new BarcodeScanner();
                 bs.scanCode(SowMatingActivity3.this);
                 break;
             case R.id.nextBtn :
@@ -76,8 +77,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         if(keyCode == 293 && (event.getAction() == KeyEvent.ACTION_DOWN)){
-            BarcodeScanner bs = new BarcodeScanner();
-            bs.scanCode(SowMatingActivity3.this);
+            bs.scanCode(this);
             return false;
         }
         return false;
@@ -86,7 +86,6 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        BarcodeScanner bs = new BarcodeScanner();
         if(result != null) {
             if(result.getContents() != null) {
                 String barcode = result.getContents();
@@ -134,13 +133,6 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                     });
                     queue.add(jsonObj);
                 }
-               /* Intent intent = new Intent(SowMatingActivity3.this,SowMatingActivity4.class);
-                intent.putExtra("Barcode",barcodeEditText.getText().toString());
-                intent.putExtra("UnitCode",UnitCode);
-                intent.putExtra("UHFCODE",UHFCODE);
-                startActivity(intent);
-                finish();*/
-
             }else{
                 Toast.makeText(this,"ไม่มีบาร์โค๊ด",Toast.LENGTH_LONG).show();
             }

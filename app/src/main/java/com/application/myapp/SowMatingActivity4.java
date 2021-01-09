@@ -120,7 +120,7 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                 queue2.add(jsonObjectRequest);
 
                 Intent intent = new Intent(SowMatingActivity4.this, SowMatingActivity.class);
-
+                intent.putExtra("sowSemenID",sowSemenID);
                 startActivity(intent);
                 break;
         }
