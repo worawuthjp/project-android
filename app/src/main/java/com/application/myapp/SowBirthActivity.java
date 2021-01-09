@@ -133,6 +133,10 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
                     }
                 };
                 queue1.add(jsonObjectRequest);
+
+                Intent intent = new Intent(SowBirthActivity.this,DamActivity.class);
+                startActivity(intent);
+                finish();
                 break;
         }
     }

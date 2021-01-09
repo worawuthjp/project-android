@@ -79,7 +79,7 @@
             android:id="@+id/nextBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ต่อไป"
+            android:text="บันทึก"
             android:background="#30DC0A"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
