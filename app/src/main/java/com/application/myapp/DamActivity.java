@@ -30,7 +30,7 @@ public class DamActivity extends AppCompatActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.sowMatingBtn :
-                Intent intent = new Intent(DamActivity.this,SowMatingActivity.class);
+                Intent intent = new Intent(DamActivity.this,SowMatingActivity3.class);
                 startActivity(intent);
                 break;
             case R.id.sowBirthBtn :

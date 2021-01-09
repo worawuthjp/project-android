@@ -36,9 +36,6 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
     private BarcodeScanner bs;
     private EditText barcodeEditText;
     private Button scanBtn;
-    private String UnitCode;
-    private String UHFCODE;
-    private String Barcode;
     private Button nextBtn;
     private TextView showHeaderText,showInfoText;
     private String name,userID;
@@ -87,12 +84,10 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                 bs.scanCode(SowMatingActivity4.this);
                 break;
             case R.id.nextBtn :
-                Intent intent = new Intent(SowMatingActivity4.this, MattingReCheckActivity.class);
                 //url
                 String url = mod.getUrl()+"/add/sowmating";
-
                 //Request to server
-                RequestQueue queue3 = Volley.newRequestQueue(this);
+                RequestQueue queue2 = Volley.newRequestQueue(this);
 
                 StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url,
                         new Response.Listener<String>() {
@@ -122,7 +117,9 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                         return params;
                     }
                 };
-                queue3.add(jsonObjectRequest);
+                queue2.add(jsonObjectRequest);
+
+                Intent intent = new Intent(SowMatingActivity4.this, SowMatingActivity.class);
 
                 startActivity(intent);
                 break;
@@ -179,7 +176,7 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                                         JSONObject jsn = jsonArray.getJSONObject(i);
                                         name = jsn.getString("fname")+" "+jsn.getString("lname");
                                         userID = jsn.getString("userID");
-                                        showInfoText.setText("รหัสผู้ใช้ : " + userID + "\nชื่อ-นามสกุล : " + name );
+                                        showInfoText.setText("รหัสผู้ใช้ : " + userID + "\nชื่อ-นามสกุล : " + name +"\n\n"+sowID+"\n"+sowSemenID);
                                     }
                                 } else
                                     showInfoText.setText("ไม่มีข้อมูล");

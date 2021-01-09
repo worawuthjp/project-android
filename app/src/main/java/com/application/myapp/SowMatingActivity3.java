@@ -33,24 +33,13 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     private Button nextBtn;
     private EditText barcodeEditText;
     private TextView showInfoText,showHeaderText;
-    private String sowCode,sowID;
+    private String sowCode,sowID,sowSemenID;
 
-    private String sowSireID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sow_mating3);
-
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if(extras == null) {
-                this.sowSireID = "";
-            } else {
-                this.sowSireID = extras.getString("sowID");
-            }
-
-        }
 
         scanBarcodeBtn = (Button)findViewById(R.id.scanBarCodeBtn);
         barcodeEditText = (EditText)findViewById(R.id.barcodeIDEditText);
@@ -75,9 +64,8 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                 bs.scanCode(SowMatingActivity3.this);
                 break;
             case R.id.nextBtn :
-                Intent intent = new Intent(SowMatingActivity3.this, SowMatingActivity4.class);
-                intent.putExtra("sowID",sowSireID);
-                intent.putExtra("sowSemenID",sowID);
+                Intent intent = new Intent(SowMatingActivity3.this, SowMatingActivity.class);
+                intent.putExtra("sowSemenID",sowSemenID);
                 startActivity(intent);
                 break;
         }
@@ -127,6 +115,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                                         JSONObject jsn = jsonArray.getJSONObject(i);
                                         sowID = jsn.getString("sowID");
                                         sowCode = jsn.getString("sowCode");
+                                        sowSemenID = jsn.getString("sowSemenID");
                                         showInfoText.setText("รหัสพ่อพันธุ์ : " + sowID + "\nSOWCODE : " + sowCode );
                                     }
                                 } else

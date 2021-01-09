@@ -34,12 +34,23 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
     private TextView showHeaderText;
     private TextView showInfoText;
     private Sound sound;
-    private String sowID,sowCode;
+    private String sowID,sowCode,sowSemenID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sow_mating);
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                this.sowSemenID = "";
+            } else {
+                this.sowSemenID = extras.getString("sowSemenID");
+            }
+
+        }
+
         scanBtn = (Button) findViewById(R.id.scanBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
@@ -129,6 +140,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
             case R.id.nextBtn:
                 Intent intent = new Intent(SowMatingActivity.this, SowMatingActivity2.class);
                 intent.putExtra("sowID",sowID);
+                intent.putExtra("sowSemenID",sowSemenID);
                 startActivity(intent);
                 break;
 

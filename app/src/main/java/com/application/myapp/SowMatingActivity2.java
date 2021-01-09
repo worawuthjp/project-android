@@ -34,7 +34,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     private ScanUHF scanUhf;
     private TextView showHeaderText,showInfoText;
     private String unitName,row,col;
-    private String sowID;
+    private String sowID,sowSemenID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +45,10 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
                this.sowID = "";
+               this.sowSemenID = "";
             } else {
                 this.sowID = extras.getString("sowID");
+                this.sowSemenID = extras.getString("sowSemenID");
             }
 
         }
@@ -140,8 +142,9 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.nextBtn:
-                Intent intent = new Intent(SowMatingActivity2.this, SowMatingActivity3.class);
+                Intent intent = new Intent(SowMatingActivity2.this, SowMatingActivity4.class);
                 intent.putExtra("sowID",sowID);
+                intent.putExtra("sowSemenID",sowSemenID);
                 startActivity(intent);
                 break;
 
