@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.application.myapp">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".SowBirthIndexActivity"></activity>
+        <activity android:name=".SowBirthActivity" />
+        <activity android:name=".MattingReCheckActivity" />
+        <activity android:name=".PairSowActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".SowMatingActivity4" />
+        <activity android:name=".SowMatingActivity3" />
+        <activity android:name=".SowMatingActivity2" />
+        <activity android:name=".SowMatingActivity" />
+        <activity android:name=".DamActivity" />
+        <activity android:name=".SireActivity" />
+        <activity android:name=".MainMenu" />
+        <activity android:name=".WritePage" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".CaptureAct"
+            android:screenOrientation="fullSensor"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+    </application>
+
+</manifest>

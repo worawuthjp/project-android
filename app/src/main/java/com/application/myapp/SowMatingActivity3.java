@@ -1,0 +1,162 @@
+package com.application.myapp;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.application.module.Module;
+import com.application.myapp.barcode.BarcodeScanner;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import sound.Sound;
+
+public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyListener,View.OnClickListener {
+    private Button scanBarcodeBtn;
+    private Button nextBtn;
+    private EditText barcodeEditText;
+    private TextView showInfoText,showHeaderText;
+    private String sowCode,sowID;
+
+    private String sowSireID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sow_mating3);
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                this.sowSireID = "";
+            } else {
+                this.sowSireID = extras.getString("sowID");
+            }
+
+        }
+
+        scanBarcodeBtn = (Button)findViewById(R.id.scanBarCodeBtn);
+        barcodeEditText = (EditText)findViewById(R.id.barcodeIDEditText);
+        nextBtn = (Button) findViewById(R.id.nextBtn);
+        showHeaderText = (TextView) findViewById(R.id.showHeaderText);
+        showInfoText = (TextView) findViewById(R.id.showInfoText);
+        nextBtn.setVisibility(View.INVISIBLE);
+        showHeaderText.setVisibility(View.INVISIBLE);
+
+        barcodeEditText.setOnKeyListener(this);
+        scanBarcodeBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.scanBarCodeBtn :
+                BarcodeScanner bs = new BarcodeScanner();
+                bs.scanCode(SowMatingActivity3.this);
+                break;
+            case R.id.nextBtn :
+                Intent intent = new Intent(SowMatingActivity3.this, SowMatingActivity4.class);
+                intent.putExtra("sowID",sowSireID);
+                intent.putExtra("sowSemenID",sowID);
+                startActivity(intent);
+                break;
+        }
+
+
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if(keyCode == 293 && (event.getAction() == KeyEvent.ACTION_DOWN)){
+            BarcodeScanner bs = new BarcodeScanner();
+            bs.scanCode(SowMatingActivity3.this);
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        BarcodeScanner bs = new BarcodeScanner();
+        if(result != null) {
+            if(result.getContents() != null) {
+                String barcode = result.getContents();
+                barcodeEditText.setText(barcode);
+
+                if(barcodeEditText.getText().toString() != ""){
+                    nextBtn.setVisibility(View.VISIBLE);
+                    showHeaderText.setVisibility(View.VISIBLE);
+                    //URL
+                    Module mod = new Module();
+                    String url = mod.getUrl()+"/get/sowsemen/barcode?id="+barcode;
+
+                    // SEND Request
+                    RequestQueue queue = Volley.newRequestQueue(this);
+                    StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+                            ,new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            JSONArray jsonArray = null;
+                            try {
+                                jsonArray = new JSONArray(response);
+                                if (jsonArray.length() > 0) {
+                                    //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsn = jsonArray.getJSONObject(i);
+                                        sowID = jsn.getString("sowID");
+                                        sowCode = jsn.getString("sowCode");
+                                        showInfoText.setText("รหัสพ่อพันธุ์ : " + sowID + "\nSOWCODE : " + sowCode );
+                                    }
+                                } else
+                                    showInfoText.setText("ไม่มีข้อมูล");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    queue.add(jsonObj);
+                }
+               /* Intent intent = new Intent(SowMatingActivity3.this,SowMatingActivity4.class);
+                intent.putExtra("Barcode",barcodeEditText.getText().toString());
+                intent.putExtra("UnitCode",UnitCode);
+                intent.putExtra("UHFCODE",UHFCODE);
+                startActivity(intent);
+                finish();*/
+
+            }else{
+                Toast.makeText(this,"ไม่มีบาร์โค๊ด",Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+}

@@ -1,0 +1,8 @@
+com.barcode
+com.hsm.barcode
+com.rscja.deviceapi
+com.rscja.deviceapi.entity
+com.rscja.deviceapi.exception
+com.rscja.deviceapi.service
+com.rscja.utility
+com.zebra.adc.decoder
