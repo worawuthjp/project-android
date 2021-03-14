@@ -1,5 +1,7 @@
 package com.application.module;
 
+import android.content.SharedPreferences;
+
 public class Module {
     private String host;
 

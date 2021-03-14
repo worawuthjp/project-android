@@ -33,7 +33,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     private Button nextBtn;
     private EditText barcodeEditText;
     private TextView showInfoText,showHeaderText;
-    private String sowCode,sowID,sowSemenID;
+    private String sowCode,sowID,sowSemenID,barcode;
     private BarcodeScanner bs;
 
 
@@ -43,7 +43,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
         setContentView(R.layout.activity_sow_mating3);
 
         bs = new BarcodeScanner();
-        scanBarcodeBtn = (Button)findViewById(R.id.scanBarCodeBtn);
+        scanBarcodeBtn = this.findViewById(R.id.scanBarCodeBtn);
         barcodeEditText = this.findViewById(R.id.barcodeIDEditText);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
@@ -74,11 +74,62 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
 
     }
 
+    public void getAPI(){
+        //URL
+        Module mod = new Module();
+        String url = mod.getUrl()+"/get/sowsemen/barcode?id="+barcodeEditText.getText().toString().trim();
+
+        // SEND Request
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+                ,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+                    if (jsonArray.length() > 0) {
+                        //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsn = jsonArray.getJSONObject(i);
+                            sowID = jsn.getString("sowID");
+                            sowCode = jsn.getString("sowCode");
+                            sowSemenID = jsn.getString("sowSemenID");
+                            showInfoText.setText("รหัสพ่อพันธุ์ : " + sowID + "\nSOWCODE : " + sowCode );
+                        }
+                    } else
+                        showInfoText.setText("ไม่มีข้อมูล");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(jsonObj);
+    }
+
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if(keyCode == 293 && (event.getAction() == KeyEvent.ACTION_DOWN)){
-            bs.scanCode(this);
+        if((keyCode == 293 || keyCode == 139 || keyCode == 280) && (event.getAction() == KeyEvent.ACTION_DOWN)){
+            try{
+                bs.scanCode(this);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+            }
             return false;
+        }
+
+        if(barcodeEditText.getText().toString() != ""){
+            nextBtn.setVisibility(View.VISIBLE);
+            showHeaderText.setVisibility(View.VISIBLE);
+            getAPI();
         }
         return false;
     }
@@ -88,51 +139,14 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(result != null) {
             if(result.getContents() != null) {
-                String barcode = result.getContents();
+                barcode = result.getContents();
                 barcodeEditText.setText(barcode);
-
                 if(barcodeEditText.getText().toString() != ""){
                     nextBtn.setVisibility(View.VISIBLE);
                     showHeaderText.setVisibility(View.VISIBLE);
-                    //URL
-                    Module mod = new Module();
-                    String url = mod.getUrl()+"/get/sowsemen/barcode?id="+barcode;
-
-                    // SEND Request
-                    RequestQueue queue = Volley.newRequestQueue(this);
-                    StringRequest jsonObj = new StringRequest(Request.Method.GET, url
-                            ,new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-
-                            JSONArray jsonArray = null;
-                            try {
-                                jsonArray = new JSONArray(response);
-                                if (jsonArray.length() > 0) {
-                                    //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsn = jsonArray.getJSONObject(i);
-                                        sowID = jsn.getString("sowID");
-                                        sowCode = jsn.getString("sowCode");
-                                        sowSemenID = jsn.getString("sowSemenID");
-                                        showInfoText.setText("รหัสพ่อพันธุ์ : " + sowID + "\nSOWCODE : " + sowCode );
-                                    }
-                                } else
-                                    showInfoText.setText("ไม่มีข้อมูล");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-
-                            }
-
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    queue.add(jsonObj);
+                    getAPI();
                 }
+
             }else{
                 Toast.makeText(this,"ไม่มีบาร์โค๊ด",Toast.LENGTH_LONG).show();
             }

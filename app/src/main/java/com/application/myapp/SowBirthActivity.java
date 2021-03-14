@@ -65,16 +65,17 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
         userEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == 293 && event.getAction() == KeyEvent.ACTION_DOWN){
-
+                if((keyCode == 293 || keyCode == 139 || keyCode == 280) && event.getAction() == KeyEvent.ACTION_DOWN){
                     try {
                         bs.scanCode(SowBirthActivity.this);
                     }catch(Exception e){
                         e.printStackTrace();
                     }
-
-
                     return false;
+                }
+
+                if(userEditText.getText().toString() != ""){
+                    getAPI();
                 }
 
                 return false;
@@ -82,10 +83,6 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
         });
 
         addBtn.setOnClickListener(this);
-
-    }
-
-    public void createAPI(){
 
     }
 
@@ -141,6 +138,42 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    public void getAPI(){
+        String url = mod.getUrl()+"/get/user/barcode?id="+userEditText.getText().toString();
+        // SEND Request
+        RequestQueue queue = Volley.newRequestQueue(SowBirthActivity.this);
+        StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+                ,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+                    if (jsonArray.length() > 0) {
+                        //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsn = jsonArray.getJSONObject(i);
+                            userID = jsn.getString("userID");
+                            Toast.makeText(getApplicationContext(), userID, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else
+                        userID = "";
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(jsonObj);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
@@ -149,41 +182,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
             if(result.getContents() != null) {
                 String barcode = result.getContents();
                 userEditText.setText(barcode);
-                if(userEditText.getText().toString() != ""){
-                    String url = mod.getUrl()+"/get/user/barcode?id="+userEditText.getText().toString();
-                    // SEND Request
-                    RequestQueue queue = Volley.newRequestQueue(SowBirthActivity.this);
-                    StringRequest jsonObj = new StringRequest(Request.Method.GET, url
-                            ,new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-
-                            JSONArray jsonArray = null;
-                            try {
-                                jsonArray = new JSONArray(response);
-                                if (jsonArray.length() > 0) {
-                                    //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
-                                    for (int i = 0; i < jsonArray.length(); i++) {
-                                        JSONObject jsn = jsonArray.getJSONObject(i);
-                                        userID = jsn.getString("userID");
-                                        Toast.makeText(getApplicationContext(), userID, Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                                else
-                                    userID = "";
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                    queue.add(jsonObj);
-                }
+                getAPI();
 
             }
         } else {

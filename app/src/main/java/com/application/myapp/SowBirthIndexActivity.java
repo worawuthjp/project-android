@@ -58,10 +58,10 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
     public void scanUHFFunc(){
         scanUHF.setPrtLen(0,4);
         final String result[] = scanUHF.getUHFRead();
-        sowUHFEditText.setText(result[0]);
+        sowUHFEditText.setText(result[1]);
 
         Module mod = new Module();
-        final String url = mod.getUrl()+"/get/sow/UHF?id="+result[0];
+        final String url = mod.getUrl()+"/get/sow/UHF?id="+result[1];
 
         if(sowUHFEditText.getText().toString() != ""){
             nextBtn.setVisibility(View.VISIBLE);

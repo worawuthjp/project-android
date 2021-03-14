@@ -30,6 +30,7 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
     private EditText sowCodeEditText;
     private EditText sowUHFEditText;
     private ScanUHF scanUHF;
+    private String UHFID;
     private Sound sound;
 
     @Override
@@ -37,7 +38,7 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pair_sow);
 
-        sound = new Sound(getApplicationContext());
+        sound = new Sound(PairSowActivity.this);
         scanUHF = new ScanUHF(getApplicationContext());
 
         pairSowBtn = findViewById(R.id.pairSowBtn);
@@ -82,7 +83,7 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<String, String>();
                         params.put("sowcode", sowCodeEditText.getText().toString().trim());
-                        params.put("uhf", sowUHFEditText.getText().toString().trim());
+                        params.put("uhf", UHFID.trim());
                         return params;
                     }
                 };
@@ -105,9 +106,9 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.sowUHFEditText :
                 if ((keyCode == 293 || keyCode == 139 || keyCode == 280) && event.getAction() == KeyEvent.ACTION_DOWN) {
                     sound.playSound(1);
-                    scanUHF = new ScanUHF(getApplicationContext());
                     scanUHF.setPrtLen(0, 4);
                     String result[] = scanUHF.getUHFRead();
+                    UHFID = result[1];
                     sowUHFEditText.setText(result[0]);
                     return true;
                 }

@@ -15,7 +15,7 @@ public class BarcodeScanner {
     public void scanCode(Activity thisapp){
         IntentIntegrator intentIntegrator = new IntentIntegrator(thisapp);
         intentIntegrator.setCaptureActivity(CaptureAct.class);
-        intentIntegrator.setOrientationLocked(false);
+        intentIntegrator.setOrientationLocked(true);
         intentIntegrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
         intentIntegrator.setPrompt("Scan QRCODE");
         intentIntegrator.setBarcodeImageEnabled(true);

@@ -28,13 +28,13 @@ import sound.Sound;
 
 public class SowMatingActivity extends AppCompatActivity implements View.OnClickListener {
     private ScanUHF scanner;
-    private Button nextBtn;
+    private Button nextBtn,menuBtn;
     private Button scanBtn,backBtn;
     private EditText sowIDEditText;
     private TextView showHeaderText;
     private TextView showInfoText;
     private Sound sound;
-    private String sowID,sowCode,sowSemenID;
+    private String sowID,sowCode,sowSemenID,UHFID,EPC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +54,14 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         scanBtn = (Button) findViewById(R.id.scanBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         backBtn = (Button) findViewById(R.id.backtoSemenBtn);
+        menuBtn = (Button) findViewById(R.id.backmenuBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
         nextBtn.setVisibility(View.INVISIBLE);
         sowIDEditText = (EditText) findViewById(R.id.sowIDEditText);
         sound = new Sound(SowMatingActivity.this);
-        scanner = new ScanUHF(getApplicationContext());
+        scanner = new ScanUHF(SowMatingActivity.this);
 
         sowIDEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -68,12 +69,6 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                 if((keyCode == 293 || keyCode == 139 || keyCode == 280 )&& event.getAction() == KeyEvent.ACTION_DOWN){
                     sound.playSound(1);
                     ScanUHF();
-
-                    //sowIDEditText.setText(sowIDEditText.getText().toString()+"E");
-                    /*Intent intent = new Intent(SowMatingActivity.this,SowMatingActivity2.class);
-                    intent.putExtra("UHFCODE",sowIDEditText.getText().toString());
-                    startActivity(intent);
-                    finish();*/
                     return true;
                 }
                 return false;
@@ -82,59 +77,64 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
+        menuBtn.setOnClickListener(this);
     }
 
     public void ScanUHF(){
         scanner.setPrtLen(0, 4);
-        final String UHFID = scanner.getUHFRead()[0];
+        String result[] = scanner.getUHFRead();
+        UHFID = result[1];
+        EPC = result[0];
         sowIDEditText.setText(UHFID);
-
-        //url api
-        Module mod = new Module();
-        String url = mod.getUrl();
 
         if (sowIDEditText.getText().toString() != "") {
             nextBtn.setVisibility(View.VISIBLE);
             showHeaderText.setVisibility(View.VISIBLE);
-
-            // SEND Request
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url1 = url+"/get/sow/UHF?id="+UHFID ;
-
-            StringRequest jsonObj = new StringRequest(Request.Method.GET, url1
-                    ,new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        JSONArray jsonArray = null;
-                        try {
-                            jsonArray = new JSONArray(response);
-                            if (jsonArray.length() > 0) {
-                                //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsn = jsonArray.getJSONObject(i);
-                                    sowCode = jsn.getString("sowCode");
-                                    sowID = jsn.getString("sowID");
-                                    showInfoText.setText("UHF : " + UHFID + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + sowCode + "\nsowID : " + sowID);
-                                }
-                            } else
-                                showInfoText.setText("ไม่มีข้อมูล");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
-                    }
-                });
-            queue.add(jsonObj);
+            getAPI();
         }
 
 
+    }
+
+    public void getAPI(){
+        //url api
+        Module mod = new Module();
+        String url = mod.getUrl();
+        // SEND Request
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url1 = url+"/get/sow/UHF?id="+UHFID ;
+
+        StringRequest jsonObj = new StringRequest(Request.Method.GET, url1
+                ,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+                    if (jsonArray.length() > 0) {
+                        //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsn = jsonArray.getJSONObject(i);
+                            sowCode = jsn.getString("sowCode");
+                            sowID = jsn.getString("sowID");
+                            showInfoText.setText("UHF : " + EPC + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + sowCode + "\nsowID : " + sowID);
+                        }
+                    } else
+                        showInfoText.setText("ไม่มีข้อมูล");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(jsonObj);
     }
 
     public void onClick(View v) {
@@ -153,6 +153,10 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
             case R.id.backtoSemenBtn :
                 Intent intent1 = new Intent(SowMatingActivity.this, SowMatingActivity3.class);
                 startActivity(intent1);
+                break;
+            case R.id.backmenuBtn :
+                Intent intent2 = new Intent(SowMatingActivity.this, MainMenu.class);
+                startActivity(intent2);
                 break;
         }
     }

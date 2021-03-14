@@ -19,6 +19,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
 import com.application.myapp.UHF.ScanUHF;
+import com.application.myapp.barcode.BarcodeScanner;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,11 +33,10 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     private EditText blockIDEditText;
     private Button scanBtn;
     private Button nextBtn;
-    private Sound sound;
-    private ScanUHF scanUhf;
     private TextView showHeaderText,showInfoText;
     private String unitName,row,col;
-    private String sowID,sowSemenID;
+    private String sowID,sowSemenID,barcode;
+    private BarcodeScanner bs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +52,9 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 this.sowID = extras.getString("sowID");
                 this.sowSemenID = extras.getString("sowSemenID");
             }
-
         }
 
+        bs = new BarcodeScanner();
         scanBtn = (Button) findViewById(R.id.scanBlockBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText1);
@@ -60,18 +62,24 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
         nextBtn.setVisibility(View.INVISIBLE);
         showHeaderText.setVisibility(View.INVISIBLE);
 
-        scanUhf = new ScanUHF(SowMatingActivity2.this);
-
         blockIDEditText = (EditText) findViewById(R.id.blockIDEditText);
-        sound = new Sound(SowMatingActivity2.this);
 
         blockIDEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if((keyCode == 293 || keyCode == 139 || keyCode == 280 )&& event.getAction() == KeyEvent.ACTION_DOWN){
-                    sound.playSound(1);
-                    ScanUHF();
+                    try {
+                        bs.scanCode(SowMatingActivity2.this);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     return true;
+                }
+
+                if(blockIDEditText.getText().toString() != ""){
+                    nextBtn.setVisibility(View.VISIBLE);
+                    showHeaderText.setVisibility(View.VISIBLE);
+                    getAPI();
                 }
                 return false;
             }
@@ -79,64 +87,6 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
 
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
-    }
-
-    public void ScanUHF(){
-        scanUhf.setPrtLen(0,4);
-        String result[] = scanUhf.getUHFRead();
-        blockIDEditText.setText(result[0]);
-
-        Module mod = new Module();
-        final String url = mod.getUrl()+"/get/block/RFID?id="+result[0];
-
-        if(blockIDEditText.getText().toString() != ""){
-
-            nextBtn.setVisibility(View.VISIBLE);
-            showHeaderText.setVisibility(View.VISIBLE);
-
-            // SEND Request
-            RequestQueue queue = Volley.newRequestQueue(this);
-
-
-            StringRequest jsonObj = new StringRequest(Request.Method.GET, url
-                    ,new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-
-                    JSONArray jsonArray = null;
-                    try {
-                        jsonArray = new JSONArray(response);
-                        if (jsonArray.length() > 0) {
-                            //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsn = jsonArray.getJSONObject(i);
-                                unitName = jsn.getString("unitCode");
-                                row = jsn.getString("row");
-                                col = jsn.getString("col");
-                                showInfoText.setText("UnitName : " + unitName + "\nROW : " + row + "\nCOL : " + col);
-                            }
-                        } else
-                            showInfoText.setText("ไม่มีข้อมูล");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-
-                    }
-
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
-                }
-            });
-            queue.add(jsonObj);
-
-                        /*Intent intent = new Intent(SowMatingActivity2.this,SowMatingActivity3.class);
-                        intent.putExtra("UnitCode",blockIDEditText.getText().toString());
-                        intent.putExtra("UHFCODE",UHFCODE);
-                        startActivity(intent);
-                        finish();*/
-        }
     }
 
     public void onClick(View v) {
@@ -149,9 +99,71 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 break;
 
             case R.id.scanBlockBtn :
-                sound.playSound(1);
-                ScanUHF();
+                bs.scanCode(this);
                 break;
+        }
+    }
+
+    public void getAPI(){
+        //URL
+        Module mod = new Module();
+        String url = mod.getUrl()+"/get/block/barcode?id="+blockIDEditText.getText().toString();
+
+        // SEND Request
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+                ,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                JSONArray jsonArray = null;
+                try {
+                    jsonArray = new JSONArray(response);
+                    if (jsonArray.length() > 0) {
+                        //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsn = jsonArray.getJSONObject(i);
+                            unitName = jsn.getString("unitName");
+                            row = jsn.getString("row");
+                            col = jsn.getString("col");
+                            showInfoText.setText("โรงงเรือน : " + unitName + "\nRow : " + row + "\nCol :" + col );
+                        }
+                    } else
+                        showInfoText.setText("ไม่มีข้อมูล");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+            }
+        });
+        queue.add(jsonObj);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        if(result != null) {
+            if(result.getContents() != null) {
+                barcode = result.getContents();
+                blockIDEditText.setText(barcode);
+
+                if(blockIDEditText.getText().toString() != ""){
+                    nextBtn.setVisibility(View.VISIBLE);
+                    showHeaderText.setVisibility(View.VISIBLE);
+                    getAPI();
+                }
+
+            }else{
+                Toast.makeText(this,"ไม่มีบาร์โค๊ด",Toast.LENGTH_LONG).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

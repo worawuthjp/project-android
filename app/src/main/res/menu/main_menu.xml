@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/homeMenu"
+            android:title="Home"
+            android:icon="@drawable/home_icon"/>
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:title="เมนูแม่พันธุ์">
+
+            <menu>
+                <item
+                    android:title="ผสมพันธุ์"
+                    android:id="@+id/mattingMenu"
+                    android:icon="@drawable/matting_icon"
+                    />
+                <item
+                    android:title="การคลอด"
+                    android:id="@+id/birthMenu"
+                    android:icon="@drawable/birth_icon"
+                    />
+            </menu>
+        </item>
+
+        <item
+            android:title="เมนูพ่อพันธุ์">
+
+            <menu>
+                <item
+                    android:title="รีดน้ำเชื้อ"
+                    android:id="@+id/semenMenu"
+                    android:icon="@drawable/matting_icon"
+                    />
+            </menu>
+        </item>
+
+        <item
+            android:title="วัคซีน" >
+            <menu>
+                <item
+                    android:title="ฉีดวัคซีนทั้งยูนิค"
+                    android:id="@+id/vaccineMenu1"
+                    android:icon="@drawable/matting_icon"
+                    />
+                <item
+                    android:title="ฉีดวัคซีนรายตัว"
+                    android:id="@+id/vaccineMenu2"
+                    android:icon="@drawable/matting_icon"
+                    />
+            </menu>
+        </item>
+
+        <item
+            android:title="ระบบ">
+            <menu>
+                <item
+                    android:id="@+id/logout"
+                    android:title="LOGOUT"
+                    android:icon="@drawable/login_icon"/>
+            </menu>
+        </item>
+    </group>
+
+</menu>
