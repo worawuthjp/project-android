@@ -5,9 +5,7 @@
             android:id="@+id/homeMenu"
             android:title="Home"
             android:icon="@drawable/home_icon"/>
-    </group>
 
-    <group android:checkableBehavior="single">
         <item
             android:title="เมนูแม่พันธุ์">
 
@@ -25,17 +23,17 @@
             </menu>
         </item>
 
-        <item
+        <!--<item
             android:title="เมนูพ่อพันธุ์">
 
             <menu>
                 <item
                     android:title="รีดน้ำเชื้อ"
                     android:id="@+id/semenMenu"
-                    android:icon="@drawable/matting_icon"
+                    android:icon="@drawable/semen_icon"
                     />
             </menu>
-        </item>
+        </item>-->
 
         <item
             android:title="วัคซีน" >
@@ -43,12 +41,12 @@
                 <item
                     android:title="ฉีดวัคซีนทั้งยูนิค"
                     android:id="@+id/vaccineMenu1"
-                    android:icon="@drawable/matting_icon"
+                    android:icon="@drawable/vaccine_unit_icon"
                     />
                 <item
                     android:title="ฉีดวัคซีนรายตัว"
                     android:id="@+id/vaccineMenu2"
-                    android:icon="@drawable/matting_icon"
+                    android:icon="@drawable/vaccine_icon"
                     />
             </menu>
         </item>

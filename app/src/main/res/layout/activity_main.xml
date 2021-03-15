@@ -5,16 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
+    android:id="@+id/drawer_layout"
     android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
-    <com.google.android.material.navigation.NavigationView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:headerLayout="@layout/header"
-        android:id="@+id/nav_view"
-        app:menu="@menu/main_menu"
-        android:layout_gravity="start" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -28,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:theme="@style/AppTheme.NoActionBar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -36,15 +31,32 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
-                    android:background="@color/blackTheme"
                     android:orientation="horizontal">
 
-                    <ImageButton
-                        android:id="@+id/imageButton2"
-                        android:layout_width="85dp"
-                        android:layout_height="65dp"
-                        android:background="@color/zxing_transparent"
-                        app:srcCompat="@mipmap/menu_icon" />
+
+                    <!--<androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/blackTheme"
+                        android:minHeight="?attr/actionBarSize"
+                        app:collapseIcon="@drawable/ic_menu__3_"></androidx.appcompat.widget.Toolbar>-->
+
+                    <com.google.android.material.appbar.AppBarLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.appbar.MaterialToolbar
+                            android:id="@+id/toolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            app:navigationIcon="@drawable/ic_menu__3_"
+                            style="@style/Theme.MaterialComponents.NoActionBar"
+                            />
+
+                    </com.google.android.material.appbar.AppBarLayout>
+
                 </LinearLayout>
 
                 <ImageView
@@ -63,34 +75,35 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/prompt_medium"
-                        android:textColor="#000000"
-                        android:textSize="24dp"
+                        android:text="ข้อมูลพนักงาน"
                         android:textAlignment="center"
-                        android:text="ข้อมูลพนักงาน"/>
+                        android:textColor="#000000"
+                        android:textSize="24dp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="ชื่อ-นามสกุล :"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="ชื่อ-นามสกุล :"/>
+                            android:textSize="16dp" />
 
                         <TextView
                             android:id="@+id/fullnameTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="นาย ก นามสกุล ข"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="นาย ก นามสกุล ข"/>
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -98,24 +111,25 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="ตำแหน่ง :"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="ตำแหน่ง :"/>
+                            android:textSize="16dp" />
 
                         <TextView
                             android:id="@+id/positionTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="เสมียน"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="เสมียน"/>
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -123,24 +137,25 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="username :"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="username :"/>
+                            android:textSize="16dp" />
 
                         <TextView
                             android:id="@+id/usernameTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="test"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="test"/>
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -148,29 +163,41 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="Unit :"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="Unit :"/>
+                            android:textSize="16dp" />
 
                         <TextView
                             android:id="@+id/unitTxt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/prompt_medium"
                             android:layout_marginLeft="20dp"
+                            android:fontFamily="@font/prompt_medium"
+                            android:text="Units 1/1"
                             android:textColor="#000000"
-                            android:textSize="16dp"
-                            android:text="Units 1/1"/>
+                            android:textSize="16dp" />
                     </LinearLayout>
 
                 </LinearLayout>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarSize="10dp"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/main_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

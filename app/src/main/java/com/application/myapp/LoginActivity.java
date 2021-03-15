@@ -36,7 +36,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         usernameText = (EditText)findViewById(R.id.userIDEditText);
         passwordText = (EditText)findViewById(R.id.passwordEditText);
         final Button loginButton = (Button) findViewById(R.id.loginBtn);
@@ -67,17 +66,17 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject jsn = new JSONObject(response);
                             statusLogin = jsn.getString("status");
                             if(statusLogin.equals("success")){
+
                                 Toast.makeText(getApplicationContext(), "เข้าสู่ระบบสำเร็จ", Toast.LENGTH_LONG).show();
                                 SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION",MODE_APPEND);
                                 SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("username",usernameText.getText().toString());
+                                editor.putString("userID",jsn.getString("empID"));
                                 editor.putBoolean("login",true);
                                 editor.commit();
 
 
                                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                                 startActivity(intent);
-                                finish();
                             }else{
                                 Toast.makeText(getApplicationContext(), "username หรือ password ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
                             }
@@ -108,4 +107,5 @@ public class LoginActivity extends AppCompatActivity {
         };
         queue.add(jsonObjectRequest);
     }
+
 }
