@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +26,9 @@ import com.google.zxing.integration.android.IntentResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import sound.Sound;
 
@@ -77,7 +81,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
     public void getAPI(){
         //URL
         Module mod = new Module();
-        String url = mod.getUrl()+"/get/sowsemen/barcode?id="+barcodeEditText.getText().toString().trim();
+        final String url = mod.getUrl()+"/get/sowsemen/barcode/?id=1111";
 
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -85,6 +89,7 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                 ,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+
 
                 JSONArray jsonArray = null;
                 try {
@@ -111,8 +116,24 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                return params;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username",barcodeEditText.getText().toString().trim());
+                return params;
+            }
+        };
+
         queue.add(jsonObj);
+
     }
 
     @Override

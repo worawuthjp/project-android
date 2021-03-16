@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                                 finish();
                                 break;
                             case R.id.mattingMenu :
-                                Intent intent1 = new Intent(MainActivity.this,SowMatingActivity.class);
+                                Intent intent1 = new Intent(MainActivity.this,SowMatingActivity3.class);
                                 startActivity(intent1);
                                 finish();
                                 break;
