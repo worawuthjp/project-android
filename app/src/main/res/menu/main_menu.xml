@@ -7,6 +7,11 @@
             android:icon="@drawable/home_icon"/>
 
         <item
+            android:id="@+id/pairMenu"
+            android:title="ผูก Tag UHF"
+            android:icon="@drawable/pair_icon"/>
+
+        <item
             android:title="เมนูแม่พันธุ์">
 
             <menu>

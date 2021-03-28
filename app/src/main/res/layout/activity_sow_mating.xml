@@ -5,12 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:screenOrientation="portrait"
+    android:id="@+id/drawer_layout"
     tools:context=".SowMatingActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FCFF98"
+        android:background="@color/yellowTheme"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,12 +26,16 @@
 
             <Button
                 android:id="@+id/backtoSemenBtn"
-                android:layout_width="100dp"
+                android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:background="#F3A12A"
                 android:text="สแกนน้ำเชื้อใหม่"
+                android:fontFamily="@font/prompt_medium"
+                android:textColor="#FFFFFB"
+                android:textSize="16dp"
+                android:drawableLeft="@drawable/back_icon"
                 app:layout_constraintBottom_toTopOf="@+id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -39,20 +44,6 @@
                 app:layout_constraintVertical_bias="0.0" />
 
 
-            <Button
-                android:id="@+id/backmenuBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#F3A12A"
-                android:text="menu"
-                app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
 
 
@@ -73,6 +64,7 @@
                 android:layout_height="wrap_content"
                 android:text="ยิงเบอร์หมู"
                 android:textAlignment="center"
+                android:fontFamily="@font/prompt_medium"
                 android:textColor="#000000"
                 android:textSize="24sp" />
 
@@ -87,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:hint="SowID"
+                android:fontFamily="@font/prompt_medium"
                 android:inputType="textPersonName" />
 
             <LinearLayout
@@ -100,6 +93,10 @@
                 android:id="@+id/scanBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/button_border"
+                android:fontFamily="@font/prompt_medium"
+                android:textSize="16dp"
+                android:textColor="#FFFFFB"
                 android:text="scan" />
 
             <LinearLayout
@@ -116,12 +113,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="แสดงรายละเอียด : "
+                    android:fontFamily="@font/prompt_medium"
                     android:textColor="#000000"
                     android:textSize="16dp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/showInfoText"
+                    android:fontFamily="@font/prompt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -139,7 +138,10 @@
                 android:id="@+id/nextBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#30DC0A"
+                android:background="@drawable/button_border_black"
+                android:textColor="#FFFFFB"
+                android:fontFamily="@font/prompt_medium"
+                android:textSize="16dp"
                 android:text="ต่อไป"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

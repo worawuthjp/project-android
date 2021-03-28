@@ -16,6 +16,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
@@ -43,12 +44,21 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkLogin();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            checkLogin();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
     }
 
-    public void checkLogin(){
+    public void checkLogin() {
         //url api
         Module mod = new Module();
         String url = mod.getUrl();
@@ -56,21 +66,27 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url1 = url+"/check/user" ;
 
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, url1,
-                new Response.Listener<String>() {
+        JSONObject fromdata = new JSONObject();
+        try {
+            fromdata.put("username",usernameText.getText().toString().trim());
+            fromdata.put("password",passwordText.getText().toString().trim());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url1,fromdata,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        String statusLogin = "";
-                        JSONArray jsonArray = null;
+                    public void onResponse(JSONObject response) {
+
                         try {
-                            JSONObject jsn = new JSONObject(response);
-                            statusLogin = jsn.getString("status");
+                            String statusLogin = response.getString("status");
                             if(statusLogin.equals("success")){
 
                                 Toast.makeText(getApplicationContext(), "เข้าสู่ระบบสำเร็จ", Toast.LENGTH_LONG).show();
                                 SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION",MODE_APPEND);
                                 SharedPreferences.Editor editor = sp.edit();
-                                editor.putString("userID",jsn.getString("empID"));
+                                editor.putString("userID",response.getString("empID"));
                                 editor.putBoolean("login",true);
                                 editor.commit();
 
@@ -89,22 +105,22 @@ public class LoginActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
             }
-        }) {
+        }) /*{
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                params.put("username",usernameText.getText().toString());
+                params.put("password", passwordText.getText().toString());
                 return params;
             }
 
             @Override
-            protected Map<String, String> getParams() {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("username",usernameText.getText().toString().trim());
-                params.put("password", passwordText.getText().toString().trim());
+                params.put("Content-Type", "application/x-www-form-urlencoded;");
                 return params;
             }
-        };
+        }*/;
         queue.add(jsonObjectRequest);
     }
 

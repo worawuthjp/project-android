@@ -1,14 +1,18 @@
 package com.application.myapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -19,6 +23,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
 import com.application.myapp.UHF.ScanUHF;
+import com.google.android.material.navigation.NavigationView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +41,8 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
     private ScanUHF scanUHF;
     private String UHFID;
     private Sound sound;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,62 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
 
         sowUHFEditText.setOnKeyListener(this);
         pairSowBtn.setOnClickListener(this);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        //navigation menu drawer
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.homeMenu:
+                        Intent intentHome = new Intent(getApplicationContext(),MainActivity.class);
+                        startActivity(intentHome);
+                        finish();
+                        break;
+                    case R.id.logout:
+                        SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION",MODE_APPEND);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.remove("login");
+                        editor.remove("userID");
+                        editor.commit();
+
+                        Toast.makeText(getApplicationContext(),"ออกจากระบบ",Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case R.id.mattingMenu :
+                        Intent intent1 = new Intent(getApplicationContext(),SowMatingActivity3.class);
+                        startActivity(intent1);
+                        finish();
+                        break;
+                    case R.id.pairMenu :
+                        Intent intentPair = new Intent(getApplicationContext(),PairSowActivity.class);
+                        startActivity(intentPair);
+                        finish();
+                        break;
+                    case R.id.birthMenu :
+                        Intent intentBirth = new Intent(getApplicationContext(),SowBirthIndexActivity.class);
+                        startActivity(intentBirth);
+                        finish();
+                        break;
+                    case R.id.vaccineMenu1 :
+                        Intent intentVaccine1 = new Intent(getApplicationContext(),VaccineUnitActivity1.class);
+                        startActivity(intentVaccine1);
+                        finish();
+                        break;
+                    case R.id.vaccineMenu2 :
+                        Intent intentVaccine2 = new Intent(getApplicationContext(),VaccineActivity.class);
+                        startActivity(intentVaccine2);
+                        finish();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -58,7 +125,7 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                 //pair uhf with sowCode on DB
                 RequestQueue queue = Volley.newRequestQueue(this);
                 Module mod = new Module();
-                String url = mod.getUrl()+"/update/sow/pair";
+                String url = mod.getUrl()+"/update/sow/pair?sowcode="+sowCodeEditText.getText().toString().trim()+"&uhf="+UHFID.trim();
 
                 StringRequest jsonObjectRequest = new StringRequest(Request.Method.PUT, url,
                         new Response.Listener<String>() {
@@ -71,32 +138,11 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
                     }
-                }) {
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-                        return params;
-                    }
-
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("sowcode", sowCodeEditText.getText().toString().trim());
-                        params.put("uhf", UHFID.trim());
-                        return params;
-                    }
-                };
+                }) ;
                 queue.add(jsonObjectRequest);
-                Toast.makeText(getApplicationContext(),sowCodeEditText.getText().toString(),Toast.LENGTH_LONG);
-
-
-                // go to mainmenu
-                intent = new Intent(PairSowActivity.this,MainMenu.class);
-                startActivity(intent);
-                Toast.makeText(getApplicationContext(),"บันทึกข้อมูลสำเร็จ",Toast.LENGTH_LONG).show();
-                finish();
-                break;
+                //Toast.makeText(getApplicationContext(),sowCodeEditText.getText().toString(),Toast.LENGTH_LONG);
+                sowCodeEditText.setText("");
+                sowUHFEditText.setText("");
         }
     }
 
@@ -115,5 +161,44 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
         return false;
+    }
+
+    public void pairApi(){
+        //url api
+        Module mod = new Module();
+        String url = mod.getUrl();
+        // SEND Request
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url1 = url+"/update/sow/pair";
+
+        StringRequest jsonObj = new StringRequest(Request.Method.PUT, url1
+                ,new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uhf",sowUHFEditText.getText().toString());
+                params.put("sowcode", sowCodeEditText.getText().toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded;");
+                return params;
+            }
+        };
+        queue.add(jsonObj);
     }
 }

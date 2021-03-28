@@ -9,6 +9,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".SowBirthIndexActivity"></activity>
+        <activity android:name=".VaccineUnitActivity4"></activity>
+        <activity android:name=".VaccineUnitActivity3" />
+        <activity android:name=".VaccineUnitActitvity2" />
+        <activity android:name=".VaccineActivity" />
+        <activity android:name=".VaccineUnitActivity1" />
+        <activity android:name=".SowBirthIndexActivity" />
         <activity android:name=".SowBirthActivity" />
         <activity android:name=".MattingReCheckActivity" />
         <activity android:name=".PairSowActivity" />

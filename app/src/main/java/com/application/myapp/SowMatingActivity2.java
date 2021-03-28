@@ -1,10 +1,14 @@
 package com.application.myapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
 import com.application.myapp.UHF.ScanUHF;
 import com.application.myapp.barcode.BarcodeScanner;
+import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -38,11 +43,13 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     private String sowID,sowSemenID,barcode;
     private BarcodeScanner bs;
 
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sow_mating2);
-
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -79,7 +86,12 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 if(blockIDEditText.getText().toString() != ""){
                     nextBtn.setVisibility(View.VISIBLE);
                     showHeaderText.setVisibility(View.VISIBLE);
-                    getAPI();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getAPI();
+                        }
+                    }).start();
                 }
                 return false;
             }
@@ -87,6 +99,62 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
 
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
+
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
+        //navigation menu drawer
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.homeMenu:
+                        Intent intentHome = new Intent(getApplicationContext(),MainActivity.class);
+                        startActivity(intentHome);
+                        finish();
+                        break;
+                    case R.id.logout:
+                        SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION",MODE_APPEND);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.remove("login");
+                        editor.remove("userID");
+                        editor.commit();
+
+                        Toast.makeText(getApplicationContext(),"ออกจากระบบ",Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case R.id.mattingMenu :
+                        Intent intent1 = new Intent(getApplicationContext(),SowMatingActivity3.class);
+                        startActivity(intent1);
+                        finish();
+                        break;
+                    case R.id.pairMenu :
+                        Intent intentPair = new Intent(getApplicationContext(),PairSowActivity.class);
+                        startActivity(intentPair);
+                        finish();
+                        break;
+                    case R.id.birthMenu :
+                        Intent intentBirth = new Intent(getApplicationContext(),SowBirthIndexActivity.class);
+                        startActivity(intentBirth);
+                        finish();
+                        break;
+                    case R.id.vaccineMenu1 :
+                        Intent intentVaccine1 = new Intent(getApplicationContext(),VaccineUnitActivity1.class);
+                        startActivity(intentVaccine1);
+                        finish();
+                        break;
+                    case R.id.vaccineMenu2 :
+                        Intent intentVaccine2 = new Intent(getApplicationContext(),VaccineActivity.class);
+                        startActivity(intentVaccine2);
+                        finish();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     public void onClick(View v) {
@@ -107,7 +175,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     public void getAPI(){
         //URL
         Module mod = new Module();
-        String url = mod.getUrl()+"/get/block/barcode?id="+blockIDEditText.getText().toString();
+        String url = mod.getUrl()+"/get/block/barcode?id="+blockIDEditText.getText().toString().trim();
 
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -115,12 +183,10 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 ,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
-                JSONArray jsonArray = null;
+                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                 try {
-                    jsonArray = new JSONArray(response);
+                    JSONArray jsonArray = new JSONArray(response);
                     if (jsonArray.length() > 0) {
-                        //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
                             unitName = jsn.getString("unitName");
@@ -156,7 +222,12 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 if(blockIDEditText.getText().toString() != ""){
                     nextBtn.setVisibility(View.VISIBLE);
                     showHeaderText.setVisibility(View.VISIBLE);
-                    getAPI();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getAPI();
+                        }
+                    }).start();
                 }
 
             }else{

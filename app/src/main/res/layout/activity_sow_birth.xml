@@ -1,153 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
     tools:context=".SowBirthActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="325dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ADE0EF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.228">
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="เพิ่มข้อมูลการคลอด"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24sp" />
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="19dp"
-            android:orientation="vertical">
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/linearLayout"
+            android:layout_width="325dp"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.228">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/textView3"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="จำนวนรอด : "
+                android:fontFamily="@font/prompt_medium"
+                android:text="เพิ่มข้อมูลการคลอด"
+                android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="16dp"/>
+                android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/alive"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="19dp"
+                android:orientation="vertical">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="จำนวนลูกสุกรที่รอด"
-                android:inputType="textPersonName" />
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="จำนวนรอด : "
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <EditText
+                    android:id="@+id/alive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:ems="10"
+                    android:fontFamily="@font/prompt_medium"
+                    android:hint="จำนวนลูกสุกรที่รอด"
+                    android:inputType="textPersonName"
+                    android:padding="7dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="จำนวนตาย : "
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <EditText
+                    android:id="@+id/died"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:ems="10"
+                    android:fontFamily="@font/prompt_medium"
+                    android:hint="จำนวนลูกสุกรที่ตาย"
+                    android:inputType="textPersonName"
+                    android:padding="7dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="จำนวนมัมมี่ : "
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <EditText
+                    android:id="@+id/mummy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:ems="10"
+                    android:fontFamily="@font/prompt_medium"
+                    android:hint="จำนวนลูกสุกรที่เป็นมัมมี่"
+                    android:inputType="textPersonName"
+                    android:padding="7dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="น้ำหนักรวม : "
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <EditText
+                    android:id="@+id/total_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:ems="10"
+                    android:fontFamily="@font/prompt_medium"
+                    android:hint="น้ำหนักรวม"
+                    android:inputType="textPersonName"
+                    android:padding="7dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="ผู้ทำรายการ : "
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <EditText
+                    android:id="@+id/userEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_border"
+                    android:ems="10"
+                    android:fontFamily="@font/prompt_medium"
+                    android:hint="สแกน"
+                    android:inputType="textPersonName"
+
+                    android:padding="7dp"
+                    android:textSize="16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="19dp"
+                android:orientation="vertical"></LinearLayout>
+
+            <Button
+                android:id="@+id/addSowBirthBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_border"
+                android:fontFamily="@font/prompt_medium"
+                android:text="เพิ่มรายการ"
+                android:textColor="#FFFFFB"
+                android:textSize="16dp" />
         </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="จำนวนตาย : "
-                android:textColor="#000000"
-                android:textSize="16dp"/>
-
-            <EditText
-                android:id="@+id/died"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="จำนวนลูกสุกรที่ตาย"
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="จำนวนมัมมี่ : "
-                android:textColor="#000000"
-                android:textSize="16dp"/>
-
-            <EditText
-                android:id="@+id/mummy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="จำนวนลูกสุกรที่เป็นมัมมี่"
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="น้ำหนักรวม : "
-                android:textColor="#000000"
-                android:textSize="16dp"/>
-
-            <EditText
-                android:id="@+id/total_weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="น้ำหนักรวม่"
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ผู้ทำรายการ : "
-                android:textColor="#000000"
-                android:textSize="16dp"/>
-
-            <EditText
-                android:id="@+id/userEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="สแกน"
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="19dp"
-            android:orientation="vertical">
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/addSowBirthBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="เพิ่มรายการ" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarSize="10dp"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/main_menu" />
+</androidx.drawerlayout.widget.DrawerLayout>
