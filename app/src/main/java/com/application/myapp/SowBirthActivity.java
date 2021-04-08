@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -66,11 +67,11 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
         died = (EditText) findViewById(R.id.died);
         mummy = (EditText) findViewById(R.id.mummy);
         total_weight = (EditText) findViewById(R.id.total_weight);
-        userEditText = this.findViewById(R.id.userEditText);
+        //userEditText = this.findViewById(R.id.userEditText);
         mod = new Module();
         bs = new BarcodeScanner();
 
-        userEditText.setOnKeyListener(new View.OnKeyListener() {
+        /*userEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if((keyCode == 293 || keyCode == 139 || keyCode == 280) && event.getAction() == KeyEvent.ACTION_DOWN){
@@ -88,7 +89,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
 
                 return false;
             }
-        });
+        });*/
 
         addBtn.setOnClickListener(this);
 
@@ -160,7 +161,9 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
             case R.id.addSowBirthBtn :
                 String url = mod.getUrl();
                 //Request to server
-                getAPI();
+                //getAPI();
+                SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
+                userID = sp.getString("userID","");
                 RequestQueue queue1 = Volley.newRequestQueue(this);
 
                 JSONObject fromdata = new JSONObject();
@@ -210,7 +213,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void getAPI(){
+    /*public void getAPI(){
         String url = mod.getUrl()+"/get/employee/barcode?barcode="+userEditText.getText().toString();
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(SowBirthActivity.this);
@@ -244,7 +247,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         queue.add(jsonObj);
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -257,7 +260,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        getAPI();
+                        //getAPI();
                     }
                 }).start();
 

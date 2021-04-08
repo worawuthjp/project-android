@@ -60,7 +60,7 @@
                 android:orientation="vertical"
                 android:layout_gravity="start">
                 <TextView
-                    android:id="@+id/showHeaderText"
+                    android:id="@+id/showHeaderText2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
@@ -75,7 +75,32 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/prompt"
                     android:textSize="16dp" />
+
+
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="หมายเหตุ :"
+                android:layout_marginLeft="10dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/prompt_medium"
+                android:textColor="@color/blackTheme"/>
+
+            <EditText
+                android:id="@+id/commentEditText"
+                android:layout_width="match_parent"
+                android:layout_height="137dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#FFFFFB"
+                android:fontFamily="@font/prompt_medium"
+                android:hint="หมายเหตุ"
+                android:inputType="textMultiLine"
+                android:padding="8dp"
+                android:textAlignment="center" />
 
         </LinearLayout>
 
@@ -88,6 +113,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
+
 
             <Button
                 android:id="@+id/saveSowVaccineBtn"

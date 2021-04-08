@@ -151,29 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/prompt_medium"
-                    android:text="ผู้ทำรายการ : "
-                    android:textColor="#000000"
-                    android:textSize="16dp" />
-
-                <EditText
-                    android:id="@+id/userEditText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edittext_border"
-                    android:ems="10"
-                    android:fontFamily="@font/prompt_medium"
-                    android:hint="สแกน"
-                    android:inputType="textPersonName"
-
-                    android:padding="7dp"
-                    android:textSize="16dp" />
-            </LinearLayout>
+                android:gravity="center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

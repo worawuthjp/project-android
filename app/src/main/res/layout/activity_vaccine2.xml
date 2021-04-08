@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    tools:context=".VaccineActivity">
+    tools:context=".VaccineActivity2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/prompt_medium"
-                android:text="สแกน QR Code วัคซีน"
+                android:text="สแกน UHF"
                 android:textAlignment="center"
                 android:textColor="#000"
                 android:textSize="24dp" />
@@ -34,7 +34,7 @@
             <EditText
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/QrVaccineEditText1"
+                android:id="@+id/QrVaccineEditText2"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/edittext_border"
                 android:padding="8dp"
@@ -47,9 +47,9 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_vaccine_select2"
-                android:id="@+id/QrScanBtn_vaccine"
+                android:id="@+id/QrScanBtn_vaccine2"
                 android:layout_marginTop="15dp"
-                android:text="สแกน Qrcode"
+                android:text="สแกน UHF"
                 android:fontFamily="@font/prompt_medium"/>
 
             <LinearLayout
@@ -75,7 +75,32 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/prompt"
                     android:textSize="16dp" />
+
+
             </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="หมายเหตุ :"
+                android:layout_marginLeft="10dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/prompt_medium"
+                android:textColor="@color/blackTheme"/>
+
+            <EditText
+                android:id="@+id/commentEditText"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#FFFFFB"
+                android:fontFamily="@font/prompt_medium"
+                android:hint="หมายเหตุ"
+                android:inputType="textMultiLine"
+                android:padding="8dp"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <LinearLayout
@@ -87,7 +112,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                android:id="@+id/nextToSowUHF"
+                android:id="@+id/saveSowVaccineBtn2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border_black"

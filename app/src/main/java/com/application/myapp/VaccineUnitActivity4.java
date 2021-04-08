@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
@@ -40,11 +43,12 @@ public class VaccineUnitActivity4 extends AppCompatActivity implements View.OnKe
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private ArrayList<String> sowID = new ArrayList<String>();
-    private EditText QrVaccineEdit ;
+    private EditText QrVaccineEdit,commentTxt ;
     private Button saveBtn,scanBtn ;
     private TextView showHeaderText,showInfoText;
     private BarcodeScanner bs;
-    private String barcode;
+    private String barcode,empID,vaccineID;
+    private Module mod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +58,25 @@ public class VaccineUnitActivity4 extends AppCompatActivity implements View.OnKe
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
+        mod = new Module();
         bs = new BarcodeScanner();
         QrVaccineEdit = findViewById(R.id.QrVaccineEditText);
         saveBtn = findViewById(R.id.saveSowVaccineBtn);
         scanBtn = findViewById(R.id.QrScanBtn);
-        showHeaderText = (TextView) findViewById(R.id.showHeaderText);
+        showHeaderText = (TextView) findViewById(R.id.showHeaderText2);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
         saveBtn.setVisibility(View.INVISIBLE);
+        commentTxt = findViewById(R.id.commentEditText);
 
         QrVaccineEdit.setOnKeyListener(this);
         saveBtn.setOnClickListener(this);
         scanBtn.setOnClickListener(this);
+        sowID = new ArrayList<String>();
         sowID = getIntent().getStringArrayListExtra("sowID");
 
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
+        empID = sp.getString("userID","");
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -140,6 +149,7 @@ public class VaccineUnitActivity4 extends AppCompatActivity implements View.OnKe
                         //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
+                            vaccineID = jsn.getString("vaccineID");
                             showInfoText.setText("วัคซีน : "+jsn.getString("vaccineName") + "\nID : "+jsn.getString("vaccineID"));
                         }
 
@@ -229,9 +239,52 @@ public class VaccineUnitActivity4 extends AppCompatActivity implements View.OnKe
                 bs.scanCode(VaccineUnitActivity4.this);
                 break;
             case R.id.saveSowVaccineBtn :
-                Intent intent = new Intent(VaccineUnitActivity4.this, VaccineActivity.class);
+                String url = mod.getUrl();
+                JSONArray formbody = new JSONArray();
+                for (String s : sowID) {
+                    JSONObject fromdata = new JSONObject();
+                    try {
+                        fromdata.put("sowID", s);
+                        fromdata.put("empID", empID);
+                        fromdata.put("vaccineID", vaccineID);
+                        fromdata.put("comment", commentTxt.getText().toString().trim());
+                        formbody.put(fromdata);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-                startActivity(intent);
+                //Request to server
+                RequestQueue queue2 = Volley.newRequestQueue(this);
+
+                String url1 = url+"/add/sowvaccine" ;
+
+                JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.POST, url1,formbody,
+                        new Response.Listener<JSONArray>() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+                                try {
+                                    String statusAdd = response.getJSONObject(0).getString("status");
+                                    if(statusAdd.equals("success")){
+                                        Toast.makeText(getApplicationContext(),"บันทึกสำเร็จ",Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(VaccineUnitActivity4.this, VaccineUnitActivity1.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }else{
+                                        //Toast.makeText(getApplicationContext(), "มีบางอย่างผิดพลาด", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+                    }
+                });
+                queue2.add(jsonObjectRequest);
                 break;
         }
     }

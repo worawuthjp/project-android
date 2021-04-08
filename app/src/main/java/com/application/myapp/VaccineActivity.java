@@ -39,10 +39,10 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private BarcodeScanner bs;
-    private Button unitScanBarBtn,nextBtn;
-    private EditText unitQrEditText;
+    private Button ScanBarBtn,nextBtn;
+    private EditText QrEditText;
     private TextView showHeaderText,showInfoText;
-    private String barcode;
+    private String barcode,vaccineID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +52,17 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         bs = new BarcodeScanner();
-        unitScanBarBtn = findViewById(R.id.QrUnitScanBtn);
-        unitQrEditText = findViewById(R.id.QrUnitEditText);
-        nextBtn = findViewById(R.id.nextBtn);
+        ScanBarBtn = findViewById(R.id.QrScanBtn_vaccine);
+        QrEditText = findViewById(R.id.QrVaccineEditText1);
+        nextBtn = findViewById(R.id.nextToSowUHF);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
+        nextBtn.setVisibility(View.INVISIBLE);
 
-        unitQrEditText.setOnKeyListener(this);
-        unitScanBarBtn.setOnClickListener(this);
+        QrEditText.setOnKeyListener(this);
+        ScanBarBtn.setOnClickListener(this);
+        nextBtn.setOnClickListener(this);
 
         //navigation menu drawer
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -119,7 +121,7 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
     public void getAPI() {
         //URL
         Module mod = new Module();
-        String url = mod.getUrl()+"/get/sow/unit?id="+unitQrEditText.getText().toString().trim();
+        String url = mod.getUrl()+"/get/vaccine/Barcode?id="+QrEditText.getText().toString().trim();
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(this);
         StringRequest jsonObj = new StringRequest(Request.Method.GET,url
@@ -132,6 +134,8 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
                         //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
+                            vaccineID = jsn.getString("vaccineID");
+                            showInfoText.setText("วัคซีน : "+jsn.getString("vaccineName") + "\nID : "+jsn.getString("vaccineID"));
                         }
                     } else{
 
@@ -172,7 +176,7 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
             return false;
         }
 
-        if(unitQrEditText.getText().toString() != ""){
+        if(QrEditText.getText().toString() != ""){
             nextBtn.setVisibility(View.VISIBLE);
             showHeaderText.setVisibility(View.VISIBLE);
             new Thread(new Runnable() {
@@ -191,8 +195,8 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
         if(result != null) {
             if(result.getContents() != null) {
                 barcode = result.getContents();
-                unitQrEditText.setText(barcode);
-                if(unitQrEditText.getText().toString() != ""){
+                QrEditText.setText(barcode);
+                if(QrEditText.getText().toString() != ""){
                     nextBtn.setVisibility(View.VISIBLE);
                     showHeaderText.setVisibility(View.VISIBLE);
                     new Thread(new Runnable() {
@@ -215,12 +219,14 @@ public class VaccineActivity extends AppCompatActivity implements View.OnKeyList
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.scanBarCodeBtn :
+            case R.id.QrScanBtn_vaccine :
                 bs.scanCode(VaccineActivity.this);
                 break;
-            case R.id.nextBtn :
-                Intent intent = new Intent(VaccineActivity.this, SowMatingActivity.class);
+            case R.id.nextToSowUHF :
+                Intent intent = new Intent(VaccineActivity.this, VaccineActivity2.class);
+                intent.putExtra("vaccineID",vaccineID);
                 startActivity(intent);
+                finish();
                 break;
         }
     }
