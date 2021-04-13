@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/prompt_medium"
-                android:text="ยิงบาร์โค๊ดที่น้ำเชื้อ"
+                android:text="ยิงQrcodeที่น้ำเชื้อ"
                 android:textAlignment="center"
                 android:textColor="#000000"
                 android:textSize="24sp" />
@@ -52,7 +52,7 @@
                 android:padding="7dp"
                 android:textAlignment="center"
                 android:background="@drawable/edittext_border"
-                android:hint="barcode น้ำเชื้อ"
+                android:hint="Qrcode น้ำเชื้อ"
                 android:fontFamily="@font/prompt_medium"
                 android:inputType="textPersonName" />
 
@@ -71,7 +71,7 @@
                 android:textSize="18dp"
                 android:fontFamily="@font/prompt_medium"
                 android:background="@drawable/button_border"
-                android:text="สแกนบาร์โค๊ด" />
+                android:text="scan" />
 
             <TextView
                 android:id="@+id/showHeaderText"

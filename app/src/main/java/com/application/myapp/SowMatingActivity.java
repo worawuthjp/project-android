@@ -150,7 +150,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
             String result[] = scanner.getUHFRead();
             UHFID = result[1];
             EPC = result[0];
-            sowIDEditText.setText(UHFID);
+            sowIDEditText.setText(EPC);
 
             if (sowIDEditText.getText().toString() != "") {
                 nextBtn.setVisibility(View.VISIBLE);

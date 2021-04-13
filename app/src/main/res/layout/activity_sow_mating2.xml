@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="blockID"
+                android:hint="Qrcode ซองหมู"
                 android:fontFamily="@font/prompt_medium"
                 android:inputType="textPersonName" />
 

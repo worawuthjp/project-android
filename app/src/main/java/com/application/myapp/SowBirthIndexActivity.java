@@ -1,12 +1,14 @@
 package com.application.myapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,11 +37,12 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
     private ScanUHF scanUHF;
     private Sound sound;
     private String sowID;
-    private Button scanBtn,nextBtn;
+    private Button scanBtn,nextBtn , scanDevice;
     private EditText sowUHFEditText;
     private TextView showHeaderText,showInfoText;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         sound = new Sound(SowBirthIndexActivity.this);
         scanBtn = (Button) findViewById(R.id.scanSowBitrh);
         sowUHFEditText = (EditText) findViewById(R.id.sowUHFEditText);
+        scanDevice = findViewById(R.id.scanDevice);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
@@ -58,6 +62,7 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         showHeaderText.setVisibility(View.INVISIBLE);
 
         scanBtn.setOnClickListener(this);
+        scanDevice.setOnClickListener(this);
         sowUHFEditText.setOnKeyListener(this);
         nextBtn.setOnClickListener(this);
 
@@ -122,7 +127,7 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         try {
             scanUHF.setPrtLen(0,4);
             final String result[] = scanUHF.getUHFRead();
-            sowUHFEditText.setText(result[1]);
+            sowUHFEditText.setText(result[0]);
             Module mod = new Module();
             final String url = mod.getUrl()+"/get/sow/UHF?id="+result[1];
 
@@ -181,8 +186,24 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
                 sound.playSound(1);
                 scanUHFFunc();
                 break;
+            case R.id.scanDevice :
+                Intent intent_searchDevices = new Intent(this , BluetoothAndroidActivity.class);
+                startActivityForResult(intent_searchDevices , 1);
+//                String text = intent_searchDevices.getStringExtra("message");
+                break;
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+                String text = data.getStringExtra("message");
+                Log.i("ScanDevice", "Message : " + text);
+                sowUHFEditText.setText(text);
+
+        }
     }
 
     @Override

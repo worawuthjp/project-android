@@ -140,7 +140,7 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
             String result[] = scanner.getUHFRead();
             UHFID = result[1];
             EPC = result[0];
-            QrVaccineEdit.setText(UHFID);
+            QrVaccineEdit.setText(EPC);
 
             if (QrVaccineEdit.getText().toString() != "") {
                 saveBtn.setVisibility(View.VISIBLE);

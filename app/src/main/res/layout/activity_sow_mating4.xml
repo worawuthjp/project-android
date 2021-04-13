@@ -26,7 +26,7 @@
                android:id="@+id/textView3"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:text="ยิงบาร์โค๊ดผู้ทำการผสม"
+               android:text="ยิงQrcodeผู้ทำการผสม"
                android:fontFamily="@font/prompt_medium"
                android:textAlignment="center"
                android:textColor="#000000"
@@ -42,7 +42,7 @@
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
                android:ems="10"
-               android:hint="barcode ผู้ทำการผสม"
+               android:hint="Qrcode ผู้ทำการผสม"
                android:fontFamily="@font/prompt_medium"
                android:inputType="textPersonName" />
 
@@ -61,7 +61,7 @@
                android:fontFamily="@font/prompt_medium"
                android:textColor="#FFFFFB"
                android:background="@drawable/button_border"
-               android:text="สแกน" />
+               android:text="scan" />
 
            <TextView
                android:id="@+id/showHeaderText"

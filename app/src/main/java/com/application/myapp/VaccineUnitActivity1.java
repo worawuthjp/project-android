@@ -143,7 +143,7 @@ public class VaccineUnitActivity1 extends AppCompatActivity implements View.OnKe
                         //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
-                            data += jsn.getString("sowID")+"\n";
+                            data += jsn.getString("sowCode")+"\n";
                             sowID.add(jsn.getString("sowID").toString());
                         }
                         showInfoText.setText("รหัสสุกร : \n"+data);

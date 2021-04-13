@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
 import com.application.myapp.UHF.ScanUHF;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -131,7 +132,16 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                         new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(), "Response is: "+response, Toast.LENGTH_LONG).show();
+                        JSONObject obj = null;
+                        try {
+                            obj = new JSONObject(response);
+                            if(obj.getString("status").equals("success")) {
+                                Toast.makeText(getApplicationContext(), "ทำรายการสำเร็จ", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 }, new Response.ErrorListener() {
                     @Override
