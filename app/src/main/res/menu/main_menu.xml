@@ -21,6 +21,11 @@
                     android:icon="@drawable/matting_icon"
                     />
                 <item
+                    android:title="อัพเดตสถานะการผสม"
+                    android:id="@+id/statusMatingMenu"
+                    android:icon="@drawable/matting_icon"
+                    />
+                <item
                     android:title="การคลอด"
                     android:id="@+id/birthMenu"
                     android:icon="@drawable/birth_icon"

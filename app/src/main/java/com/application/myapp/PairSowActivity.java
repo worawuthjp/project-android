@@ -1,8 +1,13 @@
 package com.application.myapp;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.android.volley.AuthFailureError;
@@ -36,7 +44,10 @@ import java.util.Map;
 import sound.Sound;
 
 public class PairSowActivity extends AppCompatActivity implements View.OnClickListener,View.OnKeyListener {
+    private static final int SELECT_DEVICE = 102;
+    private static final int LOCATION_PERMISSION_REQUEST = 101;
     private Button pairSowBtn;
+    private Button scanDevice;
     private EditText sowCodeEditText;
     private EditText sowUHFEditText;
     private ScanUHF scanUHF;
@@ -54,11 +65,13 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
         scanUHF = new ScanUHF(getApplicationContext());
 
         pairSowBtn = findViewById(R.id.pairSowBtn);
+        scanDevice = findViewById(R.id.scanDevice);
         sowCodeEditText = findViewById(R.id.sowCodeEditText);
         sowUHFEditText = findViewById(R.id.sowUHFEditText);
 
         sowUHFEditText.setOnKeyListener(this);
         pairSowBtn.setOnClickListener(this);
+        scanDevice.setOnClickListener(this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -111,6 +124,11 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                         startActivity(intentVaccine2);
                         finish();
                         break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
+                        finish();
+                        break;
                 }
                 return true;
             }
@@ -153,6 +171,12 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                 //Toast.makeText(getApplicationContext(),sowCodeEditText.getText().toString(),Toast.LENGTH_LONG);
                 sowCodeEditText.setText("");
                 sowUHFEditText.setText("");
+                break;
+
+            case R.id.scanDevice:
+                checkPermissions();
+//                String text = intent_searchDevices.getStringExtra("message");
+                break;
         }
     }
 
@@ -210,5 +234,59 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
             }
         };
         queue.add(jsonObj);
+    }
+
+    private void checkPermissions(){
+        if (ContextCompat.checkSelfPermission(PairSowActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(PairSowActivity.this , new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+            },LOCATION_PERMISSION_REQUEST);
+        }else {
+            Intent intent = new Intent(PairSowActivity.this , BluetoothAndroidActivity.class);
+            startActivityForResult(intent , SELECT_DEVICE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(PairSowActivity.this , BluetoothAndroidActivity.class);
+                startActivityForResult(intent , SELECT_DEVICE);
+            }else{
+                new AlertDialog.Builder(PairSowActivity.this)
+                        .setCancelable(false)
+                        .setMessage("Location permission is required \n Please grant")
+                        .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                checkPermissions();
+                            }
+                        })
+                        .setPositiveButton("Deny", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PairSowActivity.this.finish();
+                            }
+                        }).show();
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_DEVICE && resultCode == RESULT_OK) {
+            String text = data.getStringExtra("message");
+            Log.i("ScanDevice", "Message : " + text);
+            sowUHFEditText.setText(text);
+            UHFID = text;
+        }
     }
 }

@@ -151,6 +151,11 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                         startActivity(intentVaccine2);
                         finish();
                         break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
+                        finish();
+                        break;
                 }
                 return true;
             }

@@ -124,6 +124,11 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                         startActivity(intentVaccine2);
                         finish();
                         break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
+                        finish();
+                        break;
                 }
                 return true;
             }

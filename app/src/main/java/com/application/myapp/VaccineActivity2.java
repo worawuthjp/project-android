@@ -1,13 +1,21 @@
 package com.application.myapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,10 +49,12 @@ import java.util.Map;
 import sound.Sound;
 
 public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyListener,View.OnClickListener{
+    private static final int LOCATION_PERMISSION_REQUEST = 101;
+    private static final int SELECT_DEVICE = 102;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private EditText QrVaccineEdit,commentTxt ;
-    private Button saveBtn,scanBtn ;
+    private Button saveBtn,scanBtn ,scanDevice;
     private TextView showHeaderText,showInfoText;
     private BarcodeScanner bs;
     private String vaccineID,empID,UHFID,EPC,sowID;
@@ -66,6 +76,7 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
         bs = new BarcodeScanner();
         QrVaccineEdit = findViewById(R.id.QrVaccineEditText2);
         saveBtn = findViewById(R.id.saveSowVaccineBtn2);
+        scanDevice = findViewById(R.id.scanDevice);
         scanBtn = findViewById(R.id.QrScanBtn_vaccine2);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
@@ -76,6 +87,7 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
         QrVaccineEdit.setOnKeyListener(this);
         saveBtn.setOnClickListener(this);
         scanBtn.setOnClickListener(this);
+        scanDevice.setOnClickListener(this);
         vaccineID = getIntent().getStringExtra("vaccineID");
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
@@ -125,6 +137,11 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                     case R.id.vaccineMenu2 :
                         Intent intentVaccine2 = new Intent(getApplicationContext(),VaccineActivity.class);
                         startActivity(intentVaccine2);
+                        finish();
+                        break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
                         finish();
                         break;
                 }
@@ -179,7 +196,7 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
                             sowID = jsn.getString("sowID");
-                            showInfoText.setText("UHF : " + EPC + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + jsn.getString("sowCode") + "\nsowID : " + sowID);
+                            showInfoText.setText("UHF : " + UHFID + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + jsn.getString("sowCode") + "\nsowID : " + sowID);
                         }
                     } else
                         showInfoText.setText("ไม่มีข้อมูล");
@@ -264,6 +281,8 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                                         startActivity(intent);
                                         finish();
 
+                                    }else {
+                                        Toast.makeText(getApplicationContext(),"ทำรายการไม่สำเร็จ",Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -277,6 +296,68 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                 }) ;
                 queue2.add(jsonObjectRequest);
                 break;
+
+                case R.id.scanDevice:
+                    checkPermissions();
+                    break;
+
+        }
+    }
+
+    private void checkPermissions(){
+        if (ContextCompat.checkSelfPermission(VaccineActivity2.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(VaccineActivity2.this , new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+            },LOCATION_PERMISSION_REQUEST);
+        }else {
+            Intent intent = new Intent(VaccineActivity2.this , BluetoothAndroidActivity.class);
+            startActivityForResult(intent , SELECT_DEVICE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(VaccineActivity2.this , BluetoothAndroidActivity.class);
+                startActivityForResult(intent , SELECT_DEVICE);
+            }else{
+                new AlertDialog.Builder(VaccineActivity2.this)
+                        .setCancelable(false)
+                        .setMessage("Location permission is required \n Please grant")
+                        .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                checkPermissions();
+                            }
+                        })
+                        .setPositiveButton("Deny", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                VaccineActivity2.this.finish();
+                            }
+                        }).show();
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_DEVICE && resultCode == RESULT_OK) {
+            String text = data.getStringExtra("message");
+            Log.i("ScanDevice", "Message : " + text);
+            QrVaccineEdit.setText(text);
+            UHFID = text;
+            saveBtn.setVisibility(View.VISIBLE);
+            showHeaderText.setVisibility(View.VISIBLE);
+            getAPI();
         }
     }
 }

@@ -144,6 +144,11 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
                         startActivity(intentVaccine2);
                         finish();
                         break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
+                        finish();
+                        break;
                 }
                 return true;
             }
@@ -196,7 +201,7 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
                                         startActivity(intent);
 
                                     }else{
-                                        Toast.makeText(getApplicationContext(), "username หรือ password ไม่ถูกต้อง", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), "ทำรายการไม่สำเร็จ", Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

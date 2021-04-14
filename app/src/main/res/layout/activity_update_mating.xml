@@ -5,19 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drawer_layout"
-    tools:context=".VaccineActivity2">
+    tools:context=".UpdateMatingActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#B8EDE8">
+        android:background="@color/yellowTheme"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="75dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -48,7 +48,7 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_vaccine_select2"
-                android:id="@+id/QrScanBtn_vaccine2"
+                android:id="@+id/scanUHFUpdate"
                 android:layout_marginTop="15dp"
                 android:text="สแกน UHF"
                 android:fontFamily="@font/prompt_medium"/>
@@ -90,30 +90,8 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="หมายเหตุ :"
-                android:layout_marginLeft="10dp"
-                android:textStyle="bold"
-                android:fontFamily="@font/prompt_medium"
-                android:textColor="@color/blackTheme"/>
 
-            <EditText
-                android:id="@+id/commentEditText"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:background="#FFFFFB"
-                android:fontFamily="@font/prompt_medium"
-                android:hint="หมายเหตุ"
-                android:inputType="textMultiLine"
-                android:padding="8dp"
-                android:textAlignment="center" />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -123,11 +101,11 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                android:id="@+id/saveSowVaccineBtn2"
+                android:id="@+id/nextBtnToUpdate2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_border_black"
-                android:text="บันทึก"
+                android:text="ต่อไป"
                 android:textColor="#FFFFFB"
                 android:textSize="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"

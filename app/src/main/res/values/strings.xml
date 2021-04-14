@@ -1,7 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Sow Management</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="navi_open">open navi-menu</string>
     <string name="navi_close">open navi-menu</string>
+
+    <string name="statusName">Choose status</string>
+    <string-array name="statusMating">
+        <item id="1">ผสมติด</item>
+        <item id="2">ไม่ติด</item>
+    </string-array>
 </resources>

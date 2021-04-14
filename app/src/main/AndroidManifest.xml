@@ -10,16 +10,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
-    <permission android:name="android.permission.BLUETOOTH" android:label="BLUETOOTH" />
-    <permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +23,9 @@
         android:roundIcon="@mipmap/logo_sow"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".BluetoothAndroidActivity"></activity>
+        <activity android:name=".UpdateMatingActivity2"></activity>
+        <activity android:name=".UpdateMatingActivity" />
+        <activity android:name=".BluetoothAndroidActivity" />
         <activity android:name=".VaccineActivity2" />
         <activity android:name=".VaccineUnitActivity4" />
         <activity android:name=".VaccineUnitActivity3" />

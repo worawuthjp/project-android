@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UpdateMatingActivity2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/yellowTheme"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginTop="75dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/prompt_medium"
+                android:text="สถานะการผสมพันธุ์ ณ ปัจจุบัน"
+                android:textAlignment="center"
+                android:textColor="#000"
+                android:textSize="23dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:orientation="vertical"
+                android:layout_gravity="start">
+                <TextView
+                    android:id="@+id/showHeaderText"
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textAlignment="center"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="สถานะการผสมล่าสุด"/>
+
+                <TextView
+                    android:id="@+id/showInfoText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:padding="10dp"
+                    android:fontFamily="@font/prompt"
+                    android:text=""
+                    android:textColor="#B9B9B9"
+                    android:hint="ติด/ไม่ติด/ไม่ทราบผล"
+                    android:textSize="20dp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="55dp"
+                android:paddingTop="10dp"
+>
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="16dp"
+                    android:textColor="#000000"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/prompt_medium"
+                    android:text="สถานะการผสมล่าสุด"/>
+            </LinearLayout>
+            <Spinner
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/statusDropdown"
+                android:layout_marginTop="20dp"
+                android:background="#FFFFFB"
+                android:padding="8dp"
+                android:fontFamily="@font/prompt_medium"
+                android:textSize="14dp"
+                android:entries="@array/statusMating"
+                android:prompt="@string/statusName"
+                android:textAlignment="center"/>
+
+            <Button
+                android:id="@+id/saveStatusMating"
+                android:layout_width="300dp"
+                android:layout_marginTop="15dp"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFB"
+                android:textSize="18dp"
+                android:fontFamily="@font/prompt_medium"
+                android:background="@drawable/button_border"
+                android:text="บันทึก" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:scrollbarAlwaysDrawHorizontalTrack="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarSize="10dp"
+        app:headerLayout="@layout/header"
+        app:menu="@menu/main_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

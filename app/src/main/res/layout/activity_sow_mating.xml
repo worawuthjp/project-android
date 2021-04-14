@@ -78,7 +78,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
+                android:padding="8dp"
+                android:textAlignment="center"
+                android:textSize="14dp"
                 android:hint="SowID"
+                android:background="@drawable/edittext_border"
                 android:fontFamily="@font/prompt_medium"
                 android:inputType="textPersonName" />
 

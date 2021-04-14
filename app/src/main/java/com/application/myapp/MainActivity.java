@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.homeMenu:
                                 Intent intentHome = new Intent(getApplicationContext(),MainActivity.class);
                                 startActivity(intentHome);
-
+                                finish();
                                 break;
                             case R.id.logout:
                                 SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION",MODE_APPEND);
@@ -87,32 +87,37 @@ public class MainActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                                 startActivity(intent);
-
+                                finish();
                                 break;
                             case R.id.mattingMenu :
                                 Intent intent1 = new Intent(getApplicationContext(),SowMatingActivity3.class);
                                 startActivity(intent1);
-
+                                finish();
                                 break;
                             case R.id.pairMenu :
                                 Intent intentPair = new Intent(getApplicationContext(),PairSowActivity.class);
                                 startActivity(intentPair);
-
+                                finish();
                                 break;
                             case R.id.birthMenu :
                                 Intent intentBirth = new Intent(getApplicationContext(),SowBirthIndexActivity.class);
                                 startActivity(intentBirth);
-
+                                finish();
                                 break;
                             case R.id.vaccineMenu1 :
                                 Intent intentVaccine1 = new Intent(getApplicationContext(),VaccineUnitActivity1.class);
                                 startActivity(intentVaccine1);
-
+                                finish();
                                 break;
                             case R.id.vaccineMenu2 :
                                 Intent intentVaccine2 = new Intent(getApplicationContext(),VaccineActivity.class);
                                 startActivity(intentVaccine2);
-
+                                finish();
+                                break;
+                            case R.id.statusMatingMenu :
+                                Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                                startActivity(intentMating);
+                                finish();
                                 break;
                         }
                         return true;

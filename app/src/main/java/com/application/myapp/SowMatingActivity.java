@@ -1,8 +1,13 @@
 package com.application.myapp;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,7 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.android.volley.Request;
@@ -32,9 +40,12 @@ import org.json.JSONObject;
 import sound.Sound;
 
 public class SowMatingActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final int LOCATION_PERMISSION_REQUEST = 101;
+    private static final int SELECT_DEVICE = 102;
     private ScanUHF scanner;
     private Button nextBtn;
     private Button scanBtn,backBtn;
+    private Button scanDevice;
     private EditText sowIDEditText;
     private TextView showHeaderText;
     private TextView showInfoText;
@@ -62,6 +73,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         scanBtn = (Button) findViewById(R.id.scanBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         backBtn = (Button) findViewById(R.id.backtoSemenBtn);
+        scanDevice = (Button) findViewById(R.id.scanDevice);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
@@ -84,7 +96,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
-
+        scanDevice.setOnClickListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
@@ -134,6 +146,11 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                     case R.id.vaccineMenu2 :
                         Intent intentVaccine2 = new Intent(getApplicationContext(),VaccineActivity.class);
                         startActivity(intentVaccine2);
+                        finish();
+                        break;
+                    case R.id.statusMatingMenu :
+                        Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
+                        startActivity(intentMating);
                         finish();
                         break;
                 }
@@ -190,7 +207,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                             JSONObject jsn = jsonArray.getJSONObject(i);
                             sowCode = jsn.getString("sowCode");
                             sowID = jsn.getString("sowID");
-                            showInfoText.setText("UHF : " + EPC + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + sowCode + "\nsowID : " + sowID);
+                            showInfoText.setText("UHF : " + UHFID + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + sowCode + "\nsowID : " + sowID);
                         }
                     } else
                         showInfoText.setText("ไม่มีข้อมูล");
@@ -226,11 +243,79 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                 Intent intent1 = new Intent(SowMatingActivity.this, SowMatingActivity3.class);
                 startActivity(intent1);
                 break;
+            case R.id.scanDevice :
+                checkPermissions();
+                break;
+
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    private void checkPermissions(){
+        if (ContextCompat.checkSelfPermission(SowMatingActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            ActivityCompat.requestPermissions(SowMatingActivity.this , new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+            },LOCATION_PERMISSION_REQUEST);
+        }else {
+            Intent intent = new Intent(SowMatingActivity.this , BluetoothAndroidActivity.class);
+            startActivityForResult(intent , SELECT_DEVICE);
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Intent intent = new Intent(SowMatingActivity.this , BluetoothAndroidActivity.class);
+                startActivityForResult(intent , SELECT_DEVICE);
+            }else{
+                new AlertDialog.Builder(SowMatingActivity.this)
+                        .setCancelable(false)
+                        .setMessage("Location permission is required \n Please grant")
+                        .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                checkPermissions();
+                            }
+                        })
+                        .setPositiveButton("Deny", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SowMatingActivity.this.finish();
+                            }
+                        }).show();
+            }
+        }
+        else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SELECT_DEVICE && resultCode == RESULT_OK) {
+            String text = data.getStringExtra("message");
+            Log.i("ScanDevice", "Message : " + text);
+            sowIDEditText.setText(text);
+            UHFID = text;
+            if (sowIDEditText.getText().toString() != "") {
+                nextBtn.setVisibility(View.VISIBLE);
+                showHeaderText.setVisibility(View.VISIBLE);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAPI();
+                    }
+                }).start();
+            }
+        }
     }
 }
