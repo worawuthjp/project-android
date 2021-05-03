@@ -129,6 +129,11 @@ public class SowMatingActivity3 extends AppCompatActivity implements View.OnKeyL
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }

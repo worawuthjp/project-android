@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -51,6 +52,7 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
     private TextView showInfoText;
     private Sound sound;
     private String sowID,sowCode,sowSemenID,UHFID,EPC;
+    SharedPreferences setting;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -70,10 +72,10 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
 
         }
 
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
         scanBtn = (Button) findViewById(R.id.scanBtn);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         backBtn = (Button) findViewById(R.id.backtoSemenBtn);
-        scanDevice = (Button) findViewById(R.id.scanDevice);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
@@ -96,7 +98,6 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
         scanBtn.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
-        scanDevice.setOnClickListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 
@@ -151,6 +152,11 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                     case R.id.statusMatingMenu :
                         Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
                         startActivity(intentMating);
+                        finish();
+                        break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
                         finish();
                         break;
                 }
@@ -236,15 +242,17 @@ public class SowMatingActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.scanBtn :
-                sound.playSound(1);
-                ScanUHF();
+                if(setting.getString("Setting_Scan_Device","").equals("UHF")){
+                    sound.playSound(1);
+                    ScanUHF();
+                }
+                else{
+                    checkPermissions();
+                }
                 break;
             case R.id.backtoSemenBtn :
                 Intent intent1 = new Intent(SowMatingActivity.this, SowMatingActivity3.class);
                 startActivity(intent1);
-                break;
-            case R.id.scanDevice :
-                checkPermissions();
                 break;
 
         }

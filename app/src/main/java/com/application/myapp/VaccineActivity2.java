@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -54,18 +55,21 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     private EditText QrVaccineEdit,commentTxt ;
-    private Button saveBtn,scanBtn ,scanDevice;
+    private Button saveBtn,scanBtn ;
     private TextView showHeaderText,showInfoText;
     private BarcodeScanner bs;
     private String vaccineID,empID,UHFID,EPC,sowID;
     private Module mod;
     private ScanUHF scanner;
     private Sound sound;
+    SharedPreferences setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vaccine2);
+
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
@@ -76,7 +80,6 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
         bs = new BarcodeScanner();
         QrVaccineEdit = findViewById(R.id.QrVaccineEditText2);
         saveBtn = findViewById(R.id.saveSowVaccineBtn2);
-        scanDevice = findViewById(R.id.scanDevice);
         scanBtn = findViewById(R.id.QrScanBtn_vaccine2);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
@@ -87,7 +90,6 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
         QrVaccineEdit.setOnKeyListener(this);
         saveBtn.setOnClickListener(this);
         scanBtn.setOnClickListener(this);
-        scanDevice.setOnClickListener(this);
         vaccineID = getIntent().getStringExtra("vaccineID");
 
         SharedPreferences sp = getApplicationContext().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
@@ -142,6 +144,11 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                     case R.id.statusMatingMenu :
                         Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
                         startActivity(intentMating);
+                        finish();
+                        break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
                         finish();
                         break;
                 }
@@ -243,9 +250,13 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.QrScanBtn :
-                sound.playSound(1);
-                ScanUHF();
+            case R.id.QrScanBtn_vaccine2 :
+                if(setting.getString("Setting_Scan_Deivce","").equals("UHF")){
+                    sound.playSound(1);
+                    ScanUHF();
+                }else{
+                    checkPermissions();
+                }
                 break;
             case R.id.saveSowVaccineBtn2 :
                 //url
@@ -296,10 +307,6 @@ public class VaccineActivity2 extends AppCompatActivity implements View.OnKeyLis
                 }) ;
                 queue2.add(jsonObjectRequest);
                 break;
-
-                case R.id.scanDevice:
-                    checkPermissions();
-                    break;
 
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences sp;
+    SharedPreferences sp,setting;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     MaterialToolbar toolbar1;
@@ -50,7 +51,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
         sp = getApplicationContext().getSharedPreferences("SESSION", Context.MODE_PRIVATE);
+
         fullnameText = findViewById(R.id.fullnameTxt);
         positionText = findViewById(R.id.positionTxt);
         usernameText = findViewById(R.id.usernameTxt);
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(sp.contains("login")){
             if(sp.getBoolean("login",false)){
+
+                //Toast.makeText(getApplicationContext(),setting.getString("Setting_Scan_Device",""),Toast.LENGTH_LONG).show();
                 drawerLayout = findViewById(R.id.drawer_layout);
                 navigationView = findViewById(R.id.nav_view);
                 toolbar1 = (MaterialToolbar) findViewById(R.id.toolbar);
@@ -117,6 +122,11 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.statusMatingMenu :
                                 Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
                                 startActivity(intentMating);
+                                finish();
+                                break;
+                            case R.id.settingMenu :
+                                Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                                startActivity(intentSetting);
                                 finish();
                                 break;
                         }

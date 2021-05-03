@@ -23,7 +23,8 @@
         android:roundIcon="@mipmap/logo_sow"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".UpdateMatingActivity2"></activity>
+        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".UpdateMatingActivity2" />
         <activity android:name=".UpdateMatingActivity" />
         <activity android:name=".BluetoothAndroidActivity" />
         <activity android:name=".VaccineActivity2" />
@@ -34,17 +35,12 @@
         <activity android:name=".VaccineUnitActivity1" />
         <activity android:name=".SowBirthIndexActivity" />
         <activity android:name=".SowBirthActivity" />
-        <activity android:name=".MattingReCheckActivity" />
         <activity android:name=".PairSowActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".SowMatingActivity4" />
         <activity android:name=".SowMatingActivity3" />
         <activity android:name=".SowMatingActivity2" />
         <activity android:name=".SowMatingActivity" />
-        <activity android:name=".DamActivity" />
-        <activity android:name=".SireActivity" />
-        <activity android:name=".MainMenu" />
-        <activity android:name=".WritePage" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

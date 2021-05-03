@@ -11,4 +11,10 @@
         <item id="1">ผสมติด</item>
         <item id="2">ไม่ติด</item>
     </string-array>
+
+    <string-array name="scanList">
+        <item id="1">UHF</item>
+        <item id="2">NFC</item>
+    </string-array>
+    <string name="devicesummary">UHF</string>
 </resources>

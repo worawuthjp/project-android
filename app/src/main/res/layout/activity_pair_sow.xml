@@ -147,24 +147,24 @@
                     android:orientation="vertical">
 
                     <Button
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_nfc"
+                        android:id="@+id/scanDevice"
+                        android:text="สแกน"
+                        android:textColor="#FFFFFB"
+                        android:fontFamily="@font/prompt_medium"/>
+
+                    <Button
                         android:id="@+id/pairSowBtn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:fontFamily="@font/prompt_medium"
                         android:textColor="#FFFFFB"
                         android:textSize="18dp"
                         android:background="@drawable/button_border"
                         android:text="เชื่อมต่อ" />
-
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/button_nfc"
-                        android:id="@+id/scanDevice"
-                        android:layout_marginTop="10dp"
-                        android:text="สแกนจาก NFC Module"
-                        android:textColor="#FFFFFB"
-                        android:fontFamily="@font/prompt_medium"/>
                 </LinearLayout>
 
 

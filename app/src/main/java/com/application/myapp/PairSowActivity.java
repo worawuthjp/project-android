@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -51,10 +52,11 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
     private EditText sowCodeEditText;
     private EditText sowUHFEditText;
     private ScanUHF scanUHF;
-    private String UHFID;
+    private String UHFID,EPC;
     private Sound sound;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    SharedPreferences setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
 
         sound = new Sound(PairSowActivity.this);
         scanUHF = new ScanUHF(getApplicationContext());
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
 
         pairSowBtn = findViewById(R.id.pairSowBtn);
         scanDevice = findViewById(R.id.scanDevice);
@@ -129,6 +132,11 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }
@@ -174,22 +182,39 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.scanDevice:
-                checkPermissions();
+                if(setting.getString("Setting_Scan_Device","").equals("NFC")){
+                    checkPermissions();
+                }else{
+                    try {
+                        scanUHFFunc();
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }
+
 //                String text = intent_searchDevices.getStringExtra("message");
                 break;
         }
     }
 
+    public void scanUHFFunc(){
+        sound.playSound(1);
+        scanUHF.setPrtLen(0, 4);
+        String[] result = scanUHF.getUHFRead();
+        UHFID = result[1];
+        EPC = result[0];
+        sowUHFEditText.setText(result[0]);
+    }
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         switch (v.getId()) {
             case R.id.sowUHFEditText :
                 if ((keyCode == 293 || keyCode == 139 || keyCode == 280) && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    sound.playSound(1);
-                    scanUHF.setPrtLen(0, 4);
-                    String result[] = scanUHF.getUHFRead();
-                    UHFID = result[1];
-                    sowUHFEditText.setText(result[0]);
+                    try {
+                        scanUHFFunc();
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
                     return true;
                 }
                 break;

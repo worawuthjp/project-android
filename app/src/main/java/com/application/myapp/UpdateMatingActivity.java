@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -43,7 +44,7 @@ public class UpdateMatingActivity extends AppCompatActivity implements View.OnKe
 
     private static final int LOCATION_PERMISSION_REQUEST = 101;
     private static final int SELECT_DEVICE = 102;
-    private Button scanDevices,nextBtn,scanBtn;
+    private Button nextBtn,scanBtn;
     private EditText QrVaccineEdit;
     private TextView showHeaderText,showInfoText;
     private ScanUHF scanner;
@@ -52,13 +53,14 @@ public class UpdateMatingActivity extends AppCompatActivity implements View.OnKe
     private Module mod;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    SharedPreferences setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_mating);
 
-        scanDevices = findViewById(R.id.scanDevice);
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
         scanBtn = findViewById(R.id.scanUHFUpdate);
         nextBtn = findViewById(R.id.nextBtnToUpdate2);
         QrVaccineEdit = findViewById(R.id.QrVaccineEditText2);
@@ -71,7 +73,6 @@ public class UpdateMatingActivity extends AppCompatActivity implements View.OnKe
         mod = new Module();
 
         QrVaccineEdit.setOnKeyListener(this);
-        scanDevices.setOnClickListener(this);
         nextBtn.setOnClickListener(this);
         scanBtn.setOnClickListener(this);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -128,6 +129,11 @@ public class UpdateMatingActivity extends AppCompatActivity implements View.OnKe
                     case R.id.statusMatingMenu :
                         Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
                         startActivity(intentMating);
+                        finish();
+                        break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
                         finish();
                         break;
                 }
@@ -229,8 +235,14 @@ public class UpdateMatingActivity extends AppCompatActivity implements View.OnKe
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.scanDevice :
-                checkPermissions();
+            case R.id.scanUHFUpdate :
+                if(setting.getString("Setting_Scan_Device","").equals("UHF")){
+                    sound.playSound(1);
+                    ScanUHF();
+                }
+                else{
+                    checkPermissions();
+                }
                 break;
             case R.id.nextBtnToUpdate2:
                 Intent intent = new Intent(UpdateMatingActivity.this,UpdateMatingActivity2.class);

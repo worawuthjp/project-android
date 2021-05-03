@@ -122,6 +122,11 @@ public class UpdateMatingActivity2 extends AppCompatActivity implements View.OnC
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }

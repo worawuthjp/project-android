@@ -53,16 +53,6 @@
                 android:text="สแกน UHF"
                 android:fontFamily="@font/prompt_medium"/>
 
-            <Button
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_nfc"
-                android:id="@+id/scanDevice"
-                android:layout_marginTop="10dp"
-                android:text="สแกนจาก NFC Module"
-                android:textColor="#FFFFFB"
-                android:fontFamily="@font/prompt_medium"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

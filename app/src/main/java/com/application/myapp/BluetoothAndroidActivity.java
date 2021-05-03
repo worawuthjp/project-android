@@ -277,24 +277,24 @@ public class BluetoothAndroidActivity extends AppCompatActivity {
 
     private boolean backPressToExit = false;
 
-    @Override
-    public void onBackPressed() {
-
-        if (backPressToExit) {
-            super.onBackPressed();
-            return;
-        }
-        clearDiscovering();
-        this.backPressToExit = true;
-        Toast.makeText(context , "Please Back Button to outside" , Toast.LENGTH_SHORT).show();
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                backPressToExit = false;
-            }
-        }, 2000);
-    }
+    //@Override
+//    public void onBackPressed() {
+//
+//        if (backPressToExit) {
+//            super.onBackPressed();
+//            return;
+//        }
+//        clearDiscovering();
+//        this.backPressToExit = true;
+//        Toast.makeText(context , "Please Back Button to outside" , Toast.LENGTH_SHORT).show();
+//        new Handler().postDelayed(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//                backPressToExit = false;
+//            }
+//        }, 2000);
+//    }
 
     private void bluetoothOff(){
         mBTAdapter.disable(); // turn off
@@ -315,9 +315,9 @@ public class BluetoothAndroidActivity extends AppCompatActivity {
     protected void onDestroy() {
 
         super.onDestroy();
-        mConnectedThread.cancel();
-        unregisterReceiver(blReceiver);
-        bluetoothOff();
+        //mConnectedThread.cancel();
+        //unregisterReceiver(blReceiver);
+        //bluetoothOff();
     }
 
 

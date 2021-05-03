@@ -45,7 +45,7 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
     private Button nextBtn;
     private TextView showHeaderText,showInfoText;
     private String name,userID;
-    private String sowID,sowSemenID,barcode;
+    private String sowID,sowSemenID,barcode,unit_block_id;
     private Module mod;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -61,9 +61,11 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
             if(extras == null) {
                 this.sowID = "";
                 this.sowSemenID = "";
+                this.unit_block_id = "";
             } else {
                 this.sowID = extras.getString("sowID");
                 this.sowSemenID = extras.getString("sowSemenID");
+                this.unit_block_id = extras.getString("unit_block_id");
             }
 
         }
@@ -139,6 +141,11 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }
@@ -197,7 +204,8 @@ public class SowMatingActivity4 extends AppCompatActivity implements View.OnKeyL
                 try {
                     fromdata.put("sowSemenID",sowSemenID);
                     fromdata.put("sowID", sowID);
-                    fromdata.put("userID", userID);;
+                    fromdata.put("userID", userID);
+                    fromdata.put("unitBlockID",unit_block_id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

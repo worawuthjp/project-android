@@ -149,6 +149,11 @@ public class SowBirthActivity extends AppCompatActivity implements View.OnClickL
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }

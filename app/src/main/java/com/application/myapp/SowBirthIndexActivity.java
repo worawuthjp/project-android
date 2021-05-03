@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -52,18 +53,18 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
     private TextView showHeaderText,showInfoText;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-
+    SharedPreferences setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sow_birth_index);
 
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
         scanUHF = new ScanUHF(SowBirthIndexActivity.this);
         sound = new Sound(SowBirthIndexActivity.this);
         scanBtn = (Button) findViewById(R.id.scanSowBitrh);
         sowUHFEditText = (EditText) findViewById(R.id.sowUHFEditText);
-        scanDevice = findViewById(R.id.scanDevice);
         nextBtn = (Button) findViewById(R.id.nextBtn);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
@@ -72,7 +73,6 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         showHeaderText.setVisibility(View.INVISIBLE);
 
         scanBtn.setOnClickListener(this);
-        scanDevice.setOnClickListener(this);
         sowUHFEditText.setOnKeyListener(this);
         nextBtn.setOnClickListener(this);
 
@@ -130,6 +130,11 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
                     case R.id.statusMatingMenu :
                         Intent intentMating = new Intent(getApplicationContext(),UpdateMatingActivity.class);
                         startActivity(intentMating);
+                        finish();
+                        break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
                         finish();
                         break;
                 }
@@ -204,11 +209,13 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 break;
             case R.id.scanSowBitrh :
-                sound.playSound(1);
-                scanUHFFunc();
-                break;
-            case R.id.scanDevice :
-                checkPermissions();
+                if(setting.getString("Setting_Scan_Device","").equals("UHF")){
+                    sound.playSound(1);
+                    scanUHFFunc();
+                }
+                else{
+                    checkPermissions();
+                }
                 break;
         }
 

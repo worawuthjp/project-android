@@ -45,23 +45,13 @@
                 android:textAlignment="center"/>
 
             <Button
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/btn_vaccine_select2"
                 android:id="@+id/scanUHFUpdate"
-                android:layout_marginTop="15dp"
-                android:text="สแกน UHF"
-                android:fontFamily="@font/prompt_medium"/>
-
-            <Button
                 android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button_nfc"
-                android:id="@+id/scanDevice"
-                android:layout_marginTop="10dp"
-                android:text="สแกนจาก NFC Module"
-                android:textColor="#FFFFFB"
-                android:fontFamily="@font/prompt_medium"/>
+                android:layout_height="62dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/btn_vaccine_select2"
+                android:fontFamily="@font/prompt_medium"
+                android:text="สแกน" />
 
             <LinearLayout
                 android:layout_width="match_parent"

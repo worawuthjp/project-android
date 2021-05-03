@@ -65,6 +65,11 @@
             android:title="ระบบ">
             <menu>
                 <item
+                    android:title="setting"
+                    android:id="@+id/settingMenu"
+                    android:icon="@drawable/setting_icon"
+                    />
+                <item
                     android:id="@+id/logout"
                     android:title="LOGOUT"
                     android:icon="@drawable/login_icon"/>

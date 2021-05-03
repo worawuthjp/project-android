@@ -40,7 +40,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     private Button nextBtn;
     private TextView showHeaderText,showInfoText;
     private String unitName,row,col;
-    private String sowID,sowSemenID,barcode;
+    private String sowID,sowSemenID,barcode,unit_block_id;
     private BarcodeScanner bs;
 
     DrawerLayout drawerLayout;
@@ -156,6 +156,11 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                         startActivity(intentMating);
                         finish();
                         break;
+                    case R.id.settingMenu :
+                        Intent intentSetting = new Intent(getApplicationContext(),SettingActivity.class);
+                        startActivity(intentSetting);
+                        finish();
+                        break;
                 }
                 return true;
             }
@@ -168,6 +173,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 Intent intent = new Intent(SowMatingActivity2.this, SowMatingActivity4.class);
                 intent.putExtra("sowID",sowID);
                 intent.putExtra("sowSemenID",sowSemenID);
+                intent.putExtra("unit_block_id",unit_block_id);
                 startActivity(intent);
                 break;
 
@@ -191,13 +197,16 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                 //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                 try {
                     JSONArray jsonArray = new JSONArray(response);
+                    String alpha[] = {"A","B","C","D","E","F","G"};
                     if (jsonArray.length() > 0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
+                            unit_block_id = jsn.getString("unit_block_id");
                             unitName = jsn.getString("unitName");
                             row = jsn.getString("row");
                             col = jsn.getString("col");
-                            showInfoText.setText("โรงงเรือน : " + unitName + "\nRow : " + row + "\nCol :" + col );
+
+                            showInfoText.setText("โรงงเรือน : " + unitName + "\n เบอร์ซอง : "+alpha[Integer.parseInt(row)-1]+col);
                         }
                     } else
                         showInfoText.setText("ไม่มีข้อมูล");
