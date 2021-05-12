@@ -191,7 +191,7 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
             if(sowUHFEditText.getText().toString() != ""){
                 nextBtn.setVisibility(View.VISIBLE);
                 showHeaderText.setVisibility(View.VISIBLE);
-
+                getApi();
 
             }
 
