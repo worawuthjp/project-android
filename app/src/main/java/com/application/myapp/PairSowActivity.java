@@ -137,6 +137,11 @@ public class PairSowActivity extends AppCompatActivity implements View.OnClickLi
                         startActivity(intentSetting);
                         finish();
                         break;
+                    case R.id.blockMenu:
+                        Intent intentBlockMenu = new Intent(getApplicationContext(),BlockActivity.class);
+                        startActivity(intentBlockMenu);
+                        finish();
+                        break;
                 }
                 return true;
             }

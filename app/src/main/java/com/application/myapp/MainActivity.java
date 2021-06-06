@@ -129,6 +129,11 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intentSetting);
                                 finish();
                                 break;
+                            case R.id.blockMenu:
+                                Intent intentBlockMenu = new Intent(getApplicationContext(),BlockActivity.class);
+                                startActivity(intentBlockMenu);
+                                finish();
+                                break;
                         }
                         return true;
                     }

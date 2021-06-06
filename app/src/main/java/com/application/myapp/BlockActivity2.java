@@ -7,6 +7,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,14 +16,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.module.Module;
-import com.application.myapp.UHF.ScanUHF;
 import com.application.myapp.barcode.BarcodeScanner;
 import com.google.android.material.navigation.NavigationView;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -32,15 +34,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import sound.Sound;
+import java.util.HashMap;
+import java.util.Map;
 
-public class SowMatingActivity2 extends AppCompatActivity implements View.OnClickListener{
-    private EditText blockIDEditText;
-    private Button scanBtn;
-    private Button nextBtn;
-    private TextView showHeaderText,showInfoText;
+public class BlockActivity2 extends AppCompatActivity implements View.OnClickListener,View.OnKeyListener{
+    private Button submitBtn,scanDevice;
+    SharedPreferences setting;
+    private EditText blockQrEditText;
+    private TextView showInfoText,showHeaderText;
+    private String sowID,barcode,unit_block_id;
     private String unitName,row,col;
-    private String sowID,sowSemenID,barcode,unit_block_id;
     private BarcodeScanner bs;
 
     DrawerLayout drawerLayout;
@@ -49,59 +52,33 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sow_mating2);
+        setContentView(R.layout.activity_block2);
+
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
-               this.sowID = "";
-               this.sowSemenID = "";
+                this.sowID = "";
             } else {
                 this.sowID = extras.getString("sowID");
-                this.sowSemenID = extras.getString("sowSemenID");
             }
         }
 
-        bs = new BarcodeScanner();
-        scanBtn = (Button) findViewById(R.id.scanBlockBtn);
-        nextBtn = (Button) findViewById(R.id.nextBtn);
-        showHeaderText = (TextView) findViewById(R.id.showHeaderText1);
-        showInfoText = (TextView) findViewById(R.id.showInfoText1);
-        nextBtn.setVisibility(View.INVISIBLE);
+        submitBtn = findViewById(R.id.nextBtn);
+        scanDevice = findViewById(R.id.scanDevice);
+        blockQrEditText = findViewById(R.id.blockQrEditText);
+        submitBtn.setVisibility(View.INVISIBLE);
+        showHeaderText = (TextView) findViewById(R.id.showHeaderText);
+        showInfoText = (TextView) findViewById(R.id.showInfoText);
         showHeaderText.setVisibility(View.INVISIBLE);
-
-        blockIDEditText = (EditText) findViewById(R.id.blockIDEditText);
-
-        blockIDEditText.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if((keyCode == 293 || keyCode == 139 || keyCode == 280 )&& event.getAction() == KeyEvent.ACTION_DOWN){
-                    try {
-                        bs.scanCode(SowMatingActivity2.this);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    return true;
-                }
-
-                if(blockIDEditText.getText().toString() != ""){
-                    nextBtn.setVisibility(View.VISIBLE);
-                    showHeaderText.setVisibility(View.VISIBLE);
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            getAPI();
-                        }
-                    }).start();
-                }
-                return false;
-            }
-        });
-
-        scanBtn.setOnClickListener(this);
-        nextBtn.setOnClickListener(this);
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
+        bs = new BarcodeScanner();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+        submitBtn.setOnClickListener(this);
+        scanDevice.setOnClickListener(this);
+        blockQrEditText.setOnKeyListener(this);
 
         //navigation menu drawer
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -172,34 +149,88 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
         });
     }
 
+    @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.nextBtn:
-                Intent intent = new Intent(SowMatingActivity2.this, SowMatingActivity4.class);
-                intent.putExtra("sowID",sowID);
-                intent.putExtra("sowSemenID",sowSemenID);
-                intent.putExtra("unit_block_id",unit_block_id);
-                startActivity(intent);
-                break;
 
-            case R.id.scanBlockBtn :
-                bs.scanCode(this);
+        switch (v.getId()){
+            case R.id.scanDevice:
+                bs.scanCode(BlockActivity2.this);
+                break;
+            case R.id.nextBtn :
+                //url
+                Module mod = new Module();
+                String url = mod.getUrl();
+
+                JSONObject fromdata = new JSONObject();
+                try {
+                    fromdata.put("sowID",sowID);
+                    fromdata.put("unitBlockID", unit_block_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //Request to server
+                RequestQueue queue2 = Volley.newRequestQueue(this);
+
+                String url1 = url+"/add/sowblock" ;
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url1,fromdata,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                try {
+                                    String statusLogin = response.getString("status");
+                                    if(statusLogin.equals("success")){
+                                        Toast.makeText(getApplicationContext(),"บันทึกสำเร็จ",Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(BlockActivity2.this, BlockActivity.class);
+                                        startActivity(intent);
+
+                                    }else{
+                                        Toast.makeText(getApplicationContext(), "ทำรายการไม่สำเร็จ", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
+                    }
+                }) /*{
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username",usernameText.getText().toString());
+                params.put("password", passwordText.getText().toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded;");
+                return params;
+            }
+        }*/;
+                queue2.add(jsonObjectRequest);
                 break;
         }
+
+
     }
 
-    public void getAPI(){
+    public void getAPI() {
         //URL
         Module mod = new Module();
-        String url = mod.getUrl()+"/get/block/barcode?id="+blockIDEditText.getText().toString().trim();
-
+        String url = mod.getUrl()+"/get/block/barcode?id="+blockQrEditText.getText().toString().trim();
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+        StringRequest jsonObj = new StringRequest(Request.Method.GET,url
                 ,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                //Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     String alpha[] = {"A","B","C","D","E","F","G"};
@@ -219,15 +250,48 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                     e.printStackTrace();
 
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), "ส่งข้อมูลไม่สำเร็จ", Toast.LENGTH_LONG).show();
             }
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+                return params;
+            }
+
+        };
+
         queue.add(jsonObj);
+
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if((keyCode == 293 || keyCode == 139 || keyCode == 280) && (event.getAction() == KeyEvent.ACTION_DOWN)){
+            try{
+                bs.scanCode(this);
+            }catch (RuntimeException e){
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        if(blockQrEditText.getText().toString() != ""){
+            submitBtn.setVisibility(View.VISIBLE);
+            showHeaderText.setVisibility(View.VISIBLE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    getAPI();
+                }
+            }).start();
+        }
+        return false;
     }
 
     @Override
@@ -236,10 +300,9 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
         if(result != null) {
             if(result.getContents() != null) {
                 barcode = result.getContents();
-                blockIDEditText.setText(barcode);
-
-                if(blockIDEditText.getText().toString() != ""){
-                    nextBtn.setVisibility(View.VISIBLE);
+                blockQrEditText.setText(barcode);
+                if(blockQrEditText.getText().toString() != ""){
+                    submitBtn.setVisibility(View.VISIBLE);
                     showHeaderText.setVisibility(View.VISIBLE);
                     new Thread(new Runnable() {
                         @Override
@@ -247,6 +310,7 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
                             getAPI();
                         }
                     }).start();
+                    //getAPI();
                 }
 
             }else{
@@ -255,15 +319,5 @@ public class SowMatingActivity2 extends AppCompatActivity implements View.OnClic
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

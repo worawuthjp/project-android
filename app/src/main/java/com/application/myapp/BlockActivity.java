@@ -9,12 +9,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -42,42 +40,43 @@ import org.json.JSONObject;
 
 import sound.Sound;
 
-public class SowBirthIndexActivity extends AppCompatActivity implements View.OnClickListener,View.OnKeyListener {
+public class BlockActivity extends AppCompatActivity implements View.OnClickListener,View.OnKeyListener {
     private static final int LOCATION_PERMISSION_REQUEST = 101;
     private static final int SELECT_DEVICE = 102;
-    private ScanUHF scanUHF;
+    private ScanUHF scanner;
+    private Button nextButton,scanBtn;
+    private EditText blockUHFNFCEditText;
+    SharedPreferences setting;
+    private TextView showHeaderText;
+    private TextView showInfoText;
     private Sound sound;
-    private String sowID,UHFID;
-    private Button scanBtn,nextBtn , scanDevice;
-    private EditText sowUHFEditText;
-    private TextView showHeaderText,showInfoText;
+    private String sowID,UHFID,EPC;
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    SharedPreferences setting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sow_birth_index);
-
-        setting = PreferenceManager.getDefaultSharedPreferences(this);
-        scanUHF = new ScanUHF(SowBirthIndexActivity.this);
-        sound = new Sound(SowBirthIndexActivity.this);
-        scanBtn = (Button) findViewById(R.id.scanSowBitrh);
-        sowUHFEditText = (EditText) findViewById(R.id.sowUHFEditText);
-        nextBtn = (Button) findViewById(R.id.nextBtn);
+        setContentView(R.layout.activity_block);
+        nextButton = findViewById(R.id.nextBtn);
+        scanBtn = findViewById(R.id.scanDeviceBlock);
+        nextButton.setVisibility(View.INVISIBLE);
         showHeaderText = (TextView) findViewById(R.id.showHeaderText);
         showInfoText = (TextView) findViewById(R.id.showInfoText);
-
-        nextBtn.setVisibility(View.INVISIBLE);
         showHeaderText.setVisibility(View.INVISIBLE);
 
-        scanBtn.setOnClickListener(this);
-        sowUHFEditText.setOnKeyListener(this);
-        nextBtn.setOnClickListener(this);
+        setting = PreferenceManager.getDefaultSharedPreferences(this);
+        blockUHFNFCEditText = findViewById(R.id.blockUHFNFCEditText);
+        sound = new Sound(BlockActivity.this);
+        scanner = new ScanUHF(BlockActivity.this);
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+        scanBtn.setOnClickListener(this);
+        nextButton.setOnClickListener(this);
+        blockUHFNFCEditText.setOnKeyListener(this);
 
         //navigation menu drawer
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -148,12 +147,40 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         });
     }
 
-    public void getApi(){
+    public void ScanUHF(){
+
+        try{
+            scanner.setPrtLen(0, 4);
+            String result[] = scanner.getUHFRead();
+            UHFID = result[1];
+            EPC = result[0];
+            blockUHFNFCEditText.setText(EPC);
+
+            if (blockUHFNFCEditText.getText().toString() != "") {
+                nextButton.setVisibility(View.VISIBLE);
+                showHeaderText.setVisibility(View.VISIBLE);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAPI();
+                    }
+                }).start();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getAPI(){
+        //url api
         Module mod = new Module();
-        final String url = mod.getUrl()+"/get/sow/UHF?id="+UHFID;
+        String url = mod.getUrl();
         // SEND Request
         RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest jsonObj = new StringRequest(Request.Method.GET, url
+        String url1 = url+"/get/sow/UHF?id="+UHFID ;
+
+        StringRequest jsonObj = new StringRequest(Request.Method.GET, url1
                 ,new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -162,12 +189,13 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
                 try {
                     jsonArray = new JSONArray(response);
                     if (jsonArray.length() > 0) {
+                        String sowCode;
                         //Toast.makeText(getApplicationContext(), Integer.toString(jsonArray.length()), Toast.LENGTH_LONG).show();
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsn = jsonArray.getJSONObject(i);
+                            sowCode = jsn.getString("sowCode");
                             sowID = jsn.getString("sowID");
-                            String sowCode = jsn.getString("sowCode");
-                            showInfoText.setText("UHF : " + UHFID + "\nเป็นของ\nSOWCODE : " + sowCode );
+                            showInfoText.setText("UHF : " + UHFID + "\nเป็นรหัสUHFของ\nเบอร์หมู : " + sowCode + "\nsowID : " + sowID);
                         }
                     } else
                         showInfoText.setText("ไม่มีข้อมูล");
@@ -186,56 +214,52 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
         queue.add(jsonObj);
     }
 
-    public void scanUHFFunc(){
-        try {
-            scanUHF.setPrtLen(0,4);
-            final String result[] = scanUHF.getUHFRead();
-            sowUHFEditText.setText(result[0]);
-            UHFID = result[1];
-
-            if(sowUHFEditText.getText().toString() != ""){
-                nextBtn.setVisibility(View.VISIBLE);
-                showHeaderText.setVisibility(View.VISIBLE);
-                getApi();
-
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.nextBtn:
-                Intent intent = new Intent(SowBirthIndexActivity.this, SowBirthActivity.class);
-                intent.putExtra("sowID",sowID);
-                startActivity(intent);
-                break;
-            case R.id.scanSowBitrh :
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.scanDeviceBlock:
                 if(setting.getString("Setting_Scan_Device","").equals("UHF")){
                     sound.playSound(1);
-                    scanUHFFunc();
+                    ScanUHF();
                 }
                 else{
                     checkPermissions();
                 }
                 break;
+            case R.id.nextBtn:
+                Intent intent = new Intent(BlockActivity.this,BlockActivity2.class);
+                intent.putExtra("sowID",sowID);
+                startActivity(intent);
+                finish();
+                break;
         }
+    }
 
+    @Override
+    public boolean onKey(View view, int keyCode, KeyEvent event) {
+        if((keyCode == 293 || keyCode == 139 || keyCode == 280 )&& event.getAction() == KeyEvent.ACTION_DOWN){
+            sound.playSound(1);
+            ScanUHF();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     private void checkPermissions(){
-            if (ContextCompat.checkSelfPermission(SowBirthIndexActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(BlockActivity.this , Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 
-                ActivityCompat.requestPermissions(SowBirthIndexActivity.this , new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                },LOCATION_PERMISSION_REQUEST);
-            }else {
-                Intent intent = new Intent(SowBirthIndexActivity.this , BluetoothAndroidActivity.class);
-                startActivityForResult(intent , SELECT_DEVICE);
-            }
+            ActivityCompat.requestPermissions(BlockActivity.this , new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+            },LOCATION_PERMISSION_REQUEST);
+        }else {
+            Intent intent = new Intent(BlockActivity.this , BluetoothAndroidActivity.class);
+            startActivityForResult(intent , SELECT_DEVICE);
+        }
 
     }
 
@@ -243,10 +267,10 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == LOCATION_PERMISSION_REQUEST) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Intent intent = new Intent(SowBirthIndexActivity.this , BluetoothAndroidActivity.class);
+                Intent intent = new Intent(BlockActivity.this , BluetoothAndroidActivity.class);
                 startActivityForResult(intent , SELECT_DEVICE);
             }else{
-                new AlertDialog.Builder(SowBirthIndexActivity.this)
+                new AlertDialog.Builder(BlockActivity.this)
                         .setCancelable(false)
                         .setMessage("Location permission is required \n Please grant")
                         .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
@@ -258,7 +282,7 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
                         .setPositiveButton("Deny", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                SowBirthIndexActivity.this.finish();
+                                BlockActivity.this.finish();
                             }
                         }).show();
             }
@@ -273,35 +297,20 @@ public class SowBirthIndexActivity extends AppCompatActivity implements View.OnC
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_DEVICE && resultCode == RESULT_OK) {
-                String text = data.getStringExtra("message");
-                Log.i("ScanDevice", "Message : " + text);
-                sowUHFEditText.setText(text);
-                UHFID = text;
-                if(sowUHFEditText.getText().toString() != ""){
-                    nextBtn.setVisibility(View.VISIBLE);
-                    showHeaderText.setVisibility(View.VISIBLE);
-                }
-                getApi();
+            String text = data.getStringExtra("message");
+            Log.i("ScanDevice", "Message : " + text);
+            blockUHFNFCEditText.setText(text);
+            UHFID = text;
+            if (blockUHFNFCEditText.getText().toString() != "") {
+                nextButton.setVisibility(View.VISIBLE);
+                showHeaderText.setVisibility(View.VISIBLE);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getAPI();
+                    }
+                }).start();
+            }
         }
-    }
-
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        if((keyCode == 293 || keyCode == 139 || keyCode == 280 )&& event.getAction() == KeyEvent.ACTION_DOWN){
-            sound.playSound(1);
-            scanUHFFunc();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }

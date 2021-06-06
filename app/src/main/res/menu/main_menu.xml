@@ -12,6 +12,11 @@
             android:icon="@drawable/pair_icon"/>
 
         <item
+            android:id="@+id/blockMenu"
+            android:title="เข้าซอง"
+            android:icon="@drawable/block_icon"/>
+
+        <item
             android:title="เมนูแม่พันธุ์">
 
             <menu>

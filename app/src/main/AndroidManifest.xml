@@ -23,7 +23,9 @@
         android:roundIcon="@mipmap/logo_sow"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".BlockActivity2"></activity>
+        <activity android:name=".BlockActivity" />
+        <activity android:name=".SettingActivity" />
         <activity android:name=".UpdateMatingActivity2" />
         <activity android:name=".UpdateMatingActivity" />
         <activity android:name=".BluetoothAndroidActivity" />
